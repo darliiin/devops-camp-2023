@@ -9,7 +9,7 @@ for file in "$1" "$2"; do
   #if the file does not exist
   if [[ ! -f "$file" ]]; then
     rstring=$(openssl rand -base64 8)
-    echo "$rstring" | base64 -d > "$file"
+    echo "$rstring" | base64 > "$file"
     chmod 700 "$file"
     echo "new file: $file"
   #if the file exists
