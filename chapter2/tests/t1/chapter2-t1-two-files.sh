@@ -1,3 +1,4 @@
+
 #!/bin/bash
 #check for a valid number of arguments
 if [[ "$#" != 2 ]]; then
@@ -5,7 +6,7 @@ if [[ "$#" != 2 ]]; then
   exit 1
 fi
 #check if file exists
-for file in "$1" "$2"; do
+for file in "$@"; do
   #if the file does not exist
   if [[ ! -f "$file" ]]; then
     rstring=$(openssl rand -base64 8)
