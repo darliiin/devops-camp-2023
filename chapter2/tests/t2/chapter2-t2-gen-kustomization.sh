@@ -6,6 +6,15 @@ if [[ $# -eq 0 ]]; then
     exit 1
 fi
 
+# checking the name for invalid characters
+for repo_name in "$@"
+do
+  if [[ ! "$repo_name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "ERROR: name repository '$repo_name' contains invalid characters"
+    exit 1
+  fi
+done
+
 KEYS_PATH="repos"
 KUSTOMIZATION_PATH="$KEYS_PATH/kustomization.yaml"
 
