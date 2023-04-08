@@ -29,7 +29,13 @@ find "$1" -type f | while read file; do
   # check files that contain more than one dot in the name
   elif
     [[ $(echo "$file" | grep -o "\." | wc -l) > 1 ]]; then
-        echo "${file%.*}"
+      file_path=$(dirname "$file")
+      file_name="${file##*/}"
+      if [[ $(echo "$file_name" | grep -o "\." | wc -l) -eq 1 ]]; then
+        echo "${file_path}/${file_name}"
+      else
+        echo "${file_path}/${file_name%%.*}"
+      fi
   fi
 
 done
