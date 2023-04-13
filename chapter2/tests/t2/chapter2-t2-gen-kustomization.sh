@@ -22,14 +22,14 @@ if [ ! -d "$KEYS_PATH" ]; then
 fi
 
 # clearing the file before writing
-txt0=$(cat <<EOF>"$KUSTOMIZATION_PATH"
+cat <<EOF>"$KUSTOMIZATION_PATH"
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 generatorOptions:
   disableNameSuffixHash: true
 secretGenerator:
 EOF
-)
+
 
 # Loop through all repository names
 for repo_name in "$@"; do
@@ -37,7 +37,7 @@ for repo_name in "$@"; do
   echo y | ssh-keygen -t ed25519 -f $KEYS_PATH/"${repo_name}"-deploy-key.pem -N "" -q
 
 # Generate kustomization.yaml file
-txt=$( cat <<EOF>>"$KUSTOMIZATION_PATH"
+cat <<EOF>>"$KUSTOMIZATION_PATH"
   - name: ${repo_name}
     namespace: argo-cd
     options:
@@ -51,7 +51,6 @@ txt=$( cat <<EOF>>"$KUSTOMIZATION_PATH"
     files:
       - sshPrivateKey=${repo_name}-deploy-key.pem
 EOF
-)
 
 done
 
