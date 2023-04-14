@@ -17,12 +17,10 @@ do
   fi
 done
 
-if [ ! -d "$KEYS_PATH" ]; then
-  mkdir "$KEYS_PATH"
-fi
+mkdir -p "$KEYS_PATH"
 
 # clearing the file before writing
-cat <<EOF>"$KUSTOMIZATION_PATH"
+cat << EOF > "$KUSTOMIZATION_PATH"
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 generatorOptions:
@@ -37,7 +35,7 @@ for repo_name in "$@"; do
   echo y | ssh-keygen -t ed25519 -f $KEYS_PATH/"${repo_name}"-deploy-key.pem -N "" -q
 
 # Generate kustomization.yaml file
-cat <<EOF>>"$KUSTOMIZATION_PATH"
+cat << EOF >> "$KUSTOMIZATION_PATH"
   - name: ${repo_name}
     namespace: argo-cd
     options:
