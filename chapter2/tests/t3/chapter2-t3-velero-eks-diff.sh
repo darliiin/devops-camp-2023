@@ -2,32 +2,31 @@
 
 # list of kubernetes namespaces that are not backed up
 
+# function to check if a file was loaded or not
+function check_file() {
+  local uri=$1
+  local file=$2
+  if [[ "$file" == *"404:"* ]]; then
+    echo "ERROR: file not found at $uri"
+    exit 1
+  fi
+}
+
 # download velero backup
 VELERO_BACKUP_NAMESPACES=$(curl -sSL https://gist.github.com/dmitry-mightydevops/016139747b6cefdc94160607f95ede74/raw/velero.yaml)
 
-# check for file velero.yaml existence
-if [[ "$VELERO_BACKUP_NAMESPACES" == "404: Not Found"  ]]; then
-  echo "ERROR: file velero.yaml not loaded"
-  exit 1
-fi
+check_file "velero.yaml" "${VELERO_BACKUP_NAMESPACES}"
 
 # list of kubernetes namespaces backed up
-VELERO_MANIFEST=($(echo "$VELERO_BACKUP_NAMESPACES" | yq ".spec.source.helm.values" \
-  | yq ".schedules[].template.includedNamespaces[]" | sort ))
+VELERO_NAMESPACES=$(echo "$VELERO_BACKUP_NAMESPACES" | yq ".spec.source.helm.values" \
+  | yq ".schedules[].template.includedNamespaces[]" | sort )
 
-# download kubernetes namespaces
-KUBERNETES_NAMESPACES=($(curl -sSL https://gist.github.com/dmitry-mightydevops/297c4e235b61982f21a0bbbf7319ac24/raw/kubernetes-namespaces.txt))
+# list of actual kubernetes namespaces
+KUBERNETES_NAMESPACES=$(curl -sSL https://gist.github.com/dmitry-mightydevops/297c4e235b61982f21a0bbbf7319ac24/raw/kubernetes-namespaces.txt)
 
-# check for file namespaces.txt existence
-if [[ $KUBERNETES_NAMESPACES == *"404:"* ]]; then
-  echo "ERROR: file kubernetes-namespaces.txt not loaded"
-  exit 1
-fi
+check_file "kubernetes-namespaces.txt" "KUBERNETES_NAMESPACES"
 
 # list of kubernetes namespaces that are not backed up
-for namespace in "${KUBERNETES_NAMESPACES[@]}"; do
-  if ! [[ " ${VELERO_MANIFEST[@]} " =~ " ${namespace} " ]] ; then
-    echo "$namespace"
-  fi
-
-done
+echo "$VELERO_NAMESPACES" > combined.txt
+echo "$KUBERNETES_NAMESPACES" >> combined.txt
+sort combined.txt | uniq -u
