@@ -9,6 +9,6 @@ fi
 folder=$1
 
 # return a list of unique directories of all files
-for file in $(find $folder -type f); do
+find "$folder" -type f | while read -r file; do
   echo "${file%/*}"
 done | sort -u
