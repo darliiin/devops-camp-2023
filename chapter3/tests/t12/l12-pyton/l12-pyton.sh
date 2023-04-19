@@ -1,6 +1,6 @@
 cd /tmp
 mkcert localhost changelog
-cp ~/Документы/l12-pyton/50x.html .
+cp ~/Doc/l12-pyton/50x.html .
 
 cd -
 uwsgi --ini app.ini
