@@ -1,0 +1,7 @@
+version: '3'
+services:
+  app:
+    image: darliiin/flatris:flatris01
+    ports:
+      - "3001:3001"
+    restart: always
