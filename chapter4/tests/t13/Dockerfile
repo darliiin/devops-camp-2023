@@ -1,4 +1,4 @@
-kkARG node_version
+ARG node_version
 # Use an official Node runtime as a parent image 
 FROM --platform=$BUILDPLATFORM node:${node_version}
 
