@@ -20,7 +20,7 @@ find "$folder" -type f | while read  file; do
     fi
 
   # check files that contain more than one dot in the name
-  elif [[ $(echo "$file" | grep -o "\." | wc -l) > 1 ]]; then
+  elif [[ $(echo "$file" | grep -o "\." | wc -l) -gt 1 ]]; then
 
     # extract filename from file
     file_name="${file##*/}"
