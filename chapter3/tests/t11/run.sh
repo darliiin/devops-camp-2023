@@ -11,5 +11,5 @@ cd -
 sudo /usr/sbin/php-fpm8.1 --fpm-config "$(pwd)/php-fpm.conf" --php-ini "$(pwd)/php.ini" > /dev/null &
 sudo nginx -c "$(pwd)/nginx.conf"
 
-curl https://localhost/reports/fast
-curl https://localhost/reports/slow
+curl -w "\nTotal time: %{time_total}s\n" https://localhost/reports/fast
+curl -w "\nTotal time: %{time_total}s\n" https://localhost/reports/slow
