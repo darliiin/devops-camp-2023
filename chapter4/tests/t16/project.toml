@@ -1,0 +1,7 @@
+[[build.env]]
+name = "BP_PHP_VERSION"
+value = "8.1.18"
+
+[[build.env]]
+name='BP_PHP_SERVER'
+value='nginx'
