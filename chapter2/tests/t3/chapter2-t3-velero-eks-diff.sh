@@ -2,10 +2,10 @@
 
 # function to check if a file was loaded or not
 function check_file() {
-  local uri=$1
+  local name_file=$1
   local file=$2
   if [[ "$file" == *"404:"* ]]; then
-    echo "ERROR: file not found at $uri"
+    echo "ERROR: file $name_file not found "
     exit 1
   fi
 }
@@ -22,13 +22,7 @@ VELERO_NAMESPACES=$(echo "$VELERO_BACKUP" | yq ".spec.source.helm.values" \
 # list of actual kubernetes namespaces
 KUBERNETES_NAMESPACES=$(curl -sSL https://gist.github.com/dmitry-mightydevops/297c4e235b61982f21a0bbbf7319ac24/raw/kubernetes-namespaces.txt)
 
-# check if kubernetes-namespaces.txt file exists
-if [[ ! -f "kubernetes-namespaces.txt" ]]; then
-  echo "ERROR: kubernetes-namespaces.txt file not found"
-  exit 1
-fi
-
-check_file "kubernetes-namespaces.txt" "KUBERNETES_NAMESPACES"
+check_file "kubernetes-namespaces.txt" "${KUBERNETES_NAMESPACES}"
 
 # list of kubernetes namespaces that are not backed up
-(sort <<< "$VELERO_NAMESPACES"$'\n'"$KUBERNETES_NAMESPACES" | uniq -u)
+sort <<< "$VELERO_NAMESPACES"$'\n'"$KUBERNETES_NAMESPACES" | uniq -u
