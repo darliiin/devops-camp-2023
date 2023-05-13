@@ -1,7 +1,11 @@
 [[build.env]]
-name = "BP_PHP_VERSION"
-value = "8.1.18"
+name='BP_PHP_VERSION'
+value='8.1.*'
 
 [[build.env]]
-name='BP_PHP_SERVER'
-value='nginx'
+name = "BP_PHP_SERVER"
+value = "nginx"
+
+[[build.env]]
+name = "PHP_NGINX_PATH"
+value = "/workspace/.nginx.conf.d/nginx.conf"

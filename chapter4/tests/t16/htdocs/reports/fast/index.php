@@ -1,3 +1,3 @@
 <?php
-  echo ("FAST REPORT1");
+  echo ("FAST REPORT");
 ?>
