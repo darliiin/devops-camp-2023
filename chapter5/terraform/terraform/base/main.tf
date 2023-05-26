@@ -78,22 +78,16 @@ module "ec2_instance" {
   tags = var.tags
 
   user_data = <<EOF
-  #! /bin/bash
-  mkdir /tmp/ssm
-
-  curl https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm -o /tmp/ssm/amazon-ssm-agent.rpm
-
-  sudo yum install -y /tmp/ssm/amazon-ssm-agent.rpm
-
-  sudo stop amazon-ssm-agent
-
-  sudo -E amazon-ssm-agent -register -code "activation-code" -id "activation-id" -region "us-east-2"
-
-  sudo start amazon-ssm-agent
-
-  sudo yum -y install nginx
-  systemctl start nginx
-  systemctl enable nginx
+#!/bin/bash
+mkdir /tmp/ssm
+curl https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm -o /tmp/ssm/amazon-ssm-agent.rpm
+sudo yum install -y /tmp/ssm/amazon-ssm-agent.rpm
+sudo stop amazon-ssm-agent
+sudo -E amazon-ssm-agent -register -code "activation-code" -id "activation-id" -region "us-east-2"
+sudo start amazon-ssm-agent
+sudo yum -y install nginx
+systemctl start nginx
+systemctl enable nginx
   EOF
 }
 
@@ -128,38 +122,38 @@ module "wordpress_rds_sg" {
 #   └─────────────────────┘
 
 module "wordpress_rds" {
-  source = "terraform-aws-modules/rds/aws"
+  source     = "terraform-aws-modules/rds/aws"
+  identifier = "dev-daria-nalimova-user-rds"
+  #   instance_use_identifier_prefix  = false
+  #   monitoring_role_use_name_prefix = false
+  #   skip_final_snapshot = true
 
-  identifier          = "dev-daria-nalimova-user-db"
-  skip_final_snapshot = true
 
+  # DB parameter group
+  family            = "mysql8.0"
+  version           = "5.9.0"
   engine            = "mysql"
-  engine_version    = "8.0.32"
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
 
-  db_name  = "dev-daria_nalimova_user_db"
+  # DB option group
+  major_engine_version = "8.0"
+
+  db_name  = "dev_daria_nalimova_user_rds"
   username = "admin"
   port     = "3306"
 
   iam_database_authentication_enabled = true
-
-  vpc_security_group_ids = [module.wordpress_sg.security_group_id]
+  vpc_security_group_ids              = [module.wordpress_sg.security_group_id]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
-
-  tags = var.tags
+  tags               = var.tags
 
   # DB subnet group
   create_db_subnet_group = true
-  subnet_ids             = [data.aws_vpc.target.id]
+  subnet_ids             = data.aws_subnets.wordpress.ids
 
-  # DB parameter group
-  family = "mysql8.0.32"
-
-  # DB option group
-  major_engine_version = "8.0.32"
 }
 
 resource "random_password" "password" {
