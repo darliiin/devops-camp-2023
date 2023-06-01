@@ -22,12 +22,6 @@ variable "cache_engine" {
   └───────────────────┘
 */
 
-variable "ingress_rule_ec2_sg" {
-  description = "Ingress rule"
-  type        = list(map(string))
-}
-
-
 variable "egress_rule_ec2_sg" {
   description = "Egress rule"
   type        = list(map(string))
@@ -45,6 +39,33 @@ variable "instance_names" {
   default = ["1", "2"]
 }
 
+variable "name_ec2" {
+  type    = list(string)
+  default = ["1", "2"]
+}
+
+/*
+  ┌───────────────────┐
+  │ rds               │
+  └───────────────────┘
+*/
+
+variable "db_name" {
+  type        = string
+  description = "db name"
+}
+
+variable "username" {
+  type        = string
+  description = "username"
+
+}
+
+variable "port" {
+  type        = number
+  description = "port"
+
+}
 
 /*
   ┌───────────────────┐
@@ -78,7 +99,6 @@ variable "egress_rule_alb_sg" {
   description = "Egress rule"
   type        = list(map(string))
 }
-
 
 /* 
   ┌───────────────────────────────────────────────┐

@@ -1,9 +1,17 @@
-# output "cache_nodes" {
-#   value = {
-#     for k, cluster in aws_elasticache_cluster.wordpress : k => cluster.cache_nodes
-#   }
-# }
-# output "mysql_admin_password" {
-#   sensitive = true
-#   value     = random_password.password.result
-# }
+output "instance_id" {
+  value = [module.ec2_instance["1"].id, module.ec2_instance["2"].id]
+}
+
+
+output "efs_id" {
+  value = module.efs.id
+}
+
+output "rout_name" {
+  value = aws_route53_record.Aroute53.fqdn
+}
+
+output "password" {
+  sensitive = true
+  value     = random_password.password.result
+}

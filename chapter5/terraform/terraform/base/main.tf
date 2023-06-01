@@ -19,28 +19,89 @@ locals {
     wordpress_rds_sg = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "rds-sg"])
     wordpress_efs    = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "efs"])
     wordpress_efs_sg = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "efs-sg"])
-    wordpress_alb_sg = join(module.wordpress_label.delimiter, ["dev-daria-nalimova-user-wp", "alb-sg"])
-    wordpress_alb    = join(module.wordpress_label.delimiter, ["dev-daria-nalimova-user-wp", "alb"])
-    wordpress_acm    = join(module.wordpress_label.delimiter, [module.wordpress_label.id, ".saritasa-camps.link"])
+    wordpress_alb_sg = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb-sg"])
+    wordpress_alb    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb"])
+    wordpress_acm    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp.saritasa-camps.link"])
+
   }
+  efs_id       = module.efs.id
+  random_pswd  = random_password.password.result
+  endpoint_rds = module.wordpress_rds.db_instance_endpoint
+  db_name_rds  = module.wordpress_rds.db_instance_name
+  random_string_array = [
+    random_string.random[0].id,
+    random_string.random[1].id,
+    random_string.random[2].id,
+    random_string.random[3].id,
+    random_string.random[4].id,
+    random_string.random[5].id,
+    random_string.random[6].id,
+    random_string.random[7].id,
+  ]
+}
+
+
+#   ┌─────────────────────┐
+#   │ random pass for rds │
+#   └─────────────────────┘
+
+resource "random_password" "password" {
+  length           = 12
+  special          = true
+  override_special = "_-!%^&*()[]{}<>"
+}
+
+
+#   ┌──────────────────────────────────────┐
+#   │ random string for wp-config.php      │
+#   └──────────────────────────────────────┘
+
+resource "random_string" "random" {
+  count            = 8
+  length           = 64
+  special          = true
+  override_special = "_-!%^&*()[]{}<>"
 }
 
 #   ┌─────────────────────┐
 #   │ sg for instans      │
 #   └─────────────────────┘
 
-
 module "wordpress_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "4.17.2"
   name    = local.labels.wordpress_sg
 
-  description              = "Security group for WordPress"
-  vpc_id                   = data.aws_vpc.target.id
-  ingress_with_cidr_blocks = var.ingress_rule_ec2_sg
-  egress_with_cidr_blocks  = var.egress_rule_ec2_sg
+  description             = "Security group for WordPress"
+  vpc_id                  = data.aws_vpc.target.id
+  egress_with_cidr_blocks = var.egress_rule_ec2_sg
 
   tags = var.tags
+
+  ingress_with_source_security_group_id = [
+    {
+      rule                     = "all-tcp"
+      description              = "Open connection with rds security group"
+      source_security_group_id = module.wordpress_rds_sg.security_group_id
+    },
+    {
+      from_port                = 80
+      to_port                  = 80
+      protocol                 = "tcp"
+      description              = "Open http connection"
+      source_security_group_id = module.wordpress_alb_sg.security_group_id
+    }
+  ]
+
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      description = "Open ssh connection"
+      cidr_blocks = "54.148.180.72/32"
+    }
+  ]
 }
 
 #   ┌─────────────────────┐
@@ -77,22 +138,16 @@ module "ec2_instance" {
 
   tags = var.tags
 
-  user_data = <<EOF
-#!/bin/bash
-mkdir /tmp/ssm
-curl https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm -o /tmp/ssm/amazon-ssm-agent.rpm
-sudo yum install -y /tmp/ssm/amazon-ssm-agent.rpm
-sudo stop amazon-ssm-agent
-sudo -E amazon-ssm-agent -register -code "activation-code" -id "activation-id" -region "us-east-2"
-sudo start amazon-ssm-agent
-sudo yum -y install nginx
-systemctl start nginx
-systemctl enable nginx
-  EOF
+  user_data = templatefile("${path.cwd}/terraform/base/userd.tpl", {
+    random_pswd         = local.random_pswd,
+    endpoint_rds        = local.endpoint_rds,
+    db_name_rds         = local.db_name_rds,
+    random_string_array = local.random_string_array
+    efs_id              = local.efs_id
+
+  })
+
 }
-
-
-
 
 #   ┌─────────────────────┐
 #   │ rds sg              │
@@ -105,15 +160,14 @@ module "wordpress_rds_sg" {
   description              = "Security group for RDS"
   vpc_id                   = data.aws_vpc.target.id
   ingress_with_cidr_blocks = var.ingress_rule_rds_sg
-  egress_with_cidr_blocks  = var.egress_rule_rds_sg
-  tags                     = var.tags
-
   ingress_with_source_security_group_id = [
     {
       rule                     = "mysql-tcp"
       source_security_group_id = module.wordpress_sg.security_group_id
     }
   ]
+  egress_with_cidr_blocks = var.egress_rule_rds_sg
+  tags                    = var.tags
 }
 
 
@@ -121,30 +175,30 @@ module "wordpress_rds_sg" {
 #   │ rds                 │
 #   └─────────────────────┘
 
+# pass
+
+
 module "wordpress_rds" {
   source     = "terraform-aws-modules/rds/aws"
-  identifier = "dev-daria-nalimova-user-rds"
-  #   instance_use_identifier_prefix  = false
-  #   monitoring_role_use_name_prefix = false
-  #   skip_final_snapshot = true
-
+  identifier = "${var.environment}-${var.client}-rds"
 
   # DB parameter group
-  family            = "mysql8.0"
-  version           = "5.9.0"
-  engine            = "mysql"
-  instance_class    = "db.t4g.micro"
+  family         = "mysql8.0"
+  version        = "5.9.0"
+  engine         = "mysql"
+  instance_class = "db.t4g.micro"
+
   allocated_storage = 20
 
   # DB option group
   major_engine_version = "8.0"
 
-  db_name  = "dev_daria_nalimova_user_rds"
-  username = "admin"
-  port     = "3306"
+  db_name  = var.db_name
+  username = var.username
+  port     = var.port
 
   iam_database_authentication_enabled = true
-  vpc_security_group_ids              = [module.wordpress_sg.security_group_id]
+  vpc_security_group_ids              = [module.wordpress_rds_sg.security_group_id]
 
   maintenance_window = "Mon:00:00-Mon:03:00"
   backup_window      = "03:00-06:00"
@@ -153,186 +207,171 @@ module "wordpress_rds" {
   # DB subnet group
   create_db_subnet_group = true
   subnet_ids             = data.aws_subnets.wordpress.ids
+  create_random_password = false
+  password               = random_password.password.result
 
 }
 
-resource "random_password" "password" {
-  length  = 8
-  special = true
+#   ┌─────────────────────┐
+#   │ efs                 │
+#   └─────────────────────┘
+
+module "efs" {
+  source = "terraform-aws-modules/efs/aws"
+
+  # File system
+  name = local.labels.wordpress_efs
+  tags = var.tags
+
+  # Mount targets / security group
+  mount_targets = {
+    "us-east-2-1a" = {
+      subnet_id = "subnet-06bf7d626cfb50b30"
+    }
+    "us-east-2-1b" = {
+      subnet_id = "subnet-0412d6a553a654a0a"
+    }
+    "us-east-2-1c" = {
+      subnet_id = "subnet-0c437405f83328b86"
+    }
+  }
+
+  security_group_name   = local.labels.wordpress_efs_sg
+  security_group_vpc_id = data.aws_vpc.target.id
+
+  security_group_rules = {
+    ingress = {
+      from_port                = 2049
+      to_port                  = 2049
+      protocol                 = "tcp"
+      description              = "Open NFS"
+      source_security_group_id = module.wordpress_sg.security_group_id
+    },
+    outbound = {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic"
+    }
+  }
+
+  attach_policy = false
 }
 
-resource "aws_db_instance" "wordpress_rds" {
-  instance_class    = "db.t4g.micro"
-  allocated_storage = 20
-  engine            = "mysql"
-  username          = "admin"
-  password          = random_password.password.result
+
+#   ┌─────────────────────┐
+#   │ alb sg              │
+#   └─────────────────────┘
+
+module "wordpress_alb_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+  #   version                  = "4.17.2"
+  name                     = local.labels.wordpress_alb_sg
+  description              = "Security group for ALB"
+  vpc_id                   = data.aws_vpc.target.id
+  ingress_with_cidr_blocks = var.ingress_rule_alb_sg
+  egress_with_cidr_blocks  = var.egress_rule_alb_sg
+  tags                     = var.tags
 }
 
-#
-# #   ┌─────────────────────┐
-# #   │ efs sg              │
-# #   └─────────────────────┘
-#
-# # module "wordpress_efs_sg" {
-# #   source                   = "terraform-aws-modules/security-group/aws"
-# #
-# # }
-#
-# #   ┌─────────────────────┐
-# #   │ efs                 │
-# #   └─────────────────────┘
-#
-# module "efs" {
-#   source = "terraform-aws-modules/efs/aws"
-#
-#   # File system
-#   name = local.labels.wordpress_efs
-#   tags = var.tags
-#
-#   # Mount targets / security group
-#   mount_targets = {
-#     "us-east-2-1a" = {
-#       subnet_id = "subnet-06bf7d626cfb50b30"
-#     }
-#     "us-east-2-1b" = {
-#       subnet_id = "subnet-0412d6a553a654a0a"
-#     }
-#     "us-east-2-1c" = {
-#       subnet_id = "subnet-0c437405f83328b86"
-#     }
-#   }
-#
-#   security_group_name   = local.labels.wordpress_efs_sg
-#   security_group_vpc_id = data.aws_vpc.target.id
-#
-#   security_group_rules = {
-#     ingress = {
-#       from_port                = 2049
-#       to_port                  = 2049
-#       protocol                 = "tcp"
-#       description              = "Open NFS"
-#       source_security_group_id = module.wordpress_sg.security_group_id
-#     },
-#     outbound = {
-#       from_port   = 0
-#       to_port     = 0
-#       protocol    = "-1"
-#       cidr_blocks = ["0.0.0.0/0"]
-#       description = "Allow all outbound traffic"
-#     }
-#   }
-# }
-#
-#
-# #   ┌─────────────────────┐
-# #   │ alb sg              │
-# #   └─────────────────────┘
-#
-# module "wordpress_alb_sg" {
-#   source = "terraform-aws-modules/security-group/aws"
-#   #   version                  = "4.17.2"
-#   name                     = local.labels.wordpress_alb_sg
-#   description              = "Security group for ALB"
-#   vpc_id                   = data.aws_vpc.target.id
-#   ingress_with_cidr_blocks = var.ingress_rule_alb_sg
-#   egress_with_cidr_blocks  = var.egress_rule_alb_sg
-#   tags                     = var.tags
-# }
-#
-#
-# #   ┌─────────────────────┐
-# #   │ alb                 │
-# #   └─────────────────────┘
-#
-# module "alb" {
-#   source = "terraform-aws-modules/alb/aws"
-#   name   = local.labels.wordpress_alb
-#
-#   load_balancer_type = "application"
-#
-#   vpc_id  = data.aws_vpc.target.id
-#   subnets = ["subnet-0412d6a553a654a0a", "subnet-0c437405f83328b86", "subnet-06bf7d626cfb50b30"]
-#   #   security_groups = [module.wordpress_alb_sg.security_group_id, "sg-0d10a167dff95ae61"]
-#
-#   access_logs = {
-#     bucket = "my-alb-logs"
-#   }
-#
-#   target_groups = [
-#     {
-#       #       name_prefix      = "pref-"
-#       backend_protocol = "HTTP"
-#       backend_port     = 80
-#       target_type      = "instance"
-#       targets = {
-#         my_target = {
-#           target_id = data.aws_instances.wordpress.ids[0]
-#           port      = 80
-#         }
-#         my_other_target = {
-#           target_id = data.aws_instances.wordpress.ids[1]
-#           port      = 80
-#         }
-#       }
-#     }
-#   ]
-#
-#   tags = var.tags
-#
-#   #   https_listeners = [
-#   #     {
-#   #       port               = 443
-#   #       protocol           = "HTTPS"
-#   #       certificate_arn    = "arn:aws:iam::123456789012:server-certificate/test_cert-123456789012"
-#   #       target_group_index = 0
-#   #     }
-#   #   ]
-#
-#   #   http_tcp_listeners = [
-#   #     {
-#   #       port               = 80
-#   #       protocol           = "HTTP"
-#   #       target_group_index = 0
-#   #     }
-#   #   ]
-#
-# }
+
+#   ┌─────────────────────┐
+#   │ alb                 │
+#   └─────────────────────┘
+
+module "alb" {
+  source = "terraform-aws-modules/alb/aws"
+  name   = local.labels.wordpress_alb
+
+  load_balancer_type = "application"
+
+  vpc_id          = data.aws_vpc.target.id
+  subnets         = data.aws_subnets.wordpress.ids
+  security_groups = [module.wordpress_alb_sg.security_group_id, "sg-0d10a167dff95ae61"]
+
+  target_groups = [
+    {
+      backend_protocol = "HTTP"
+      backend_port     = 80
+      target_type      = "instance"
+      targets = {
+        my_target = {
+          target_id = data.aws_instance.ec2-1.id
+          port      = 80
+        }
+        my_other_target = {
+          target_id = data.aws_instance.ec2-2.id
+          port      = 80
+        }
+      }
+    }
+  ]
+
+  tags = var.tags
+
+  https_listeners = [
+    {
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = aws_acm_certificate_validation.certificate.certificate_arn
+      target_group_index = 0
+    }
+  ]
+  depends_on = [data.aws_instance.ec2-1, data.aws_instance.ec2-2]
+}
+
+#   ┌─────────────────────┐
+#   │ acm certificate     │
+#   └─────────────────────┘
+
+resource "aws_acm_certificate" "cert" {
+  domain_name       = local.labels.wordpress_acm
+  validation_method = "DNS"
+
+}
+
+data "aws_route53_zone" "zone_record" {
+  name         = "saritasa-camps.link"
+  private_zone = false
+
+}
+
+resource "aws_route53_record" "record" {
+  for_each = {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = data.aws_route53_zone.zone_record.zone_id
+
+}
+
+resource "aws_acm_certificate_validation" "certificate" {
+  certificate_arn         = aws_acm_certificate.cert.arn
+  validation_record_fqdns = [for record in aws_route53_record.record : record.fqdn]
+
+}
+
+resource "aws_route53_record" "Aroute53" {
+  zone_id = data.aws_route53_zone.zone_record.zone_id
+  name    = aws_acm_certificate.cert.domain_name
+  type    = "A"
+
+  alias {
+    name                   = module.alb.lb_dns_name
+    zone_id                = module.alb.lb_zone_id
+    evaluate_target_health = true
+  }
+}
 
 
-# #   ┌─────────────────────┐
-# #   │ acm certificate     │
-# #   └─────────────────────┘
-#
-# resource "aws_acm_certificate" "cert" {
-#   domain_name       = local.labels.wordpress_acm
-#   validation_method = "DNS"
-#   tags              = var.tags
-# }
-#
-# data "aws_route53_zone" "route53" {
-#   name         = "saritasa-camps.link"
-#   private_zone = false
-# }
-#
-# resource "aws_route53_record" "record" {
-#   for_each = {
-#     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
-#       name   = dvo.resource_record_name
-#       record = dvo.resource_record_value
-#       type   = dvo.resource_record_type
-#     }
-#   }
-#
-#   allow_overwrite = true
-#   name            = each.value.name
-#   records         = [each.value.record]
-#   ttl             = 60
-#   type            = each.value.type
-#   zone_id         = data.aws_route53_zone.route53.zone_id
-# }
-#
-# resource "aws_acm_certificate_validation" "cert_valid" {
-#   certificate_arn         = aws_acm_certificate.cert.arn
-#   validation_record_fqdns = [for record in aws_route53_record.record : record.fqdn]
-# }
+

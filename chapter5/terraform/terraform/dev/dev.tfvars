@@ -20,31 +20,6 @@ cache_vpc_tags = {
 cache_availability_zones = ["us-east-2a", "us-east-2b"]
 cache_engine             = "wordpress"
 
-ingress_rule_ec2_sg = [
-  {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    description = "Open http connection"
-    cidr_blocks = "0.0.0.0/0"
-  },
-  {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    description = "Open https connection"
-    cidr_blocks = "0.0.0.0/0"
-  },
-  {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    description = "Open ssh connection"
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
-
-
 egress_rule_ec2_sg = [
   {
     rule        = "all-all"
@@ -54,6 +29,17 @@ egress_rule_ec2_sg = [
 ]
 
 
+
+/*
+  ┌────────────────────────────────┐
+  │ rds                            │
+  └────────────────────────────────┘
+*/
+
+db_name  = "dev_daria_nalimova_user_rds"
+username = "admin"
+port     = "3306"
+
 /*
   ┌────────────────────────────────┐
   │ rds sg                         │
@@ -62,8 +48,8 @@ egress_rule_ec2_sg = [
 
 ingress_rule_rds_sg = [
   {
-    cidr_blocks = "195.201.120.196/32"
     rule        = "mysql-tcp"
+    cidr_blocks = "54.148.180.72/32"
   }
 ]
 
