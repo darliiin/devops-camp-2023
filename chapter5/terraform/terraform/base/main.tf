@@ -19,10 +19,10 @@ locals {
     wordpress_rds_sg = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "rds-sg"])
     wordpress_efs    = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "efs"])
     wordpress_efs_sg = join(module.wordpress_label.delimiter, [module.wordpress_label.id, "efs-sg"])
+    wordpress_alb_tg = join(module.wordpress_label.delimiter, [var.environment, var.client, "tg"])
     wordpress_alb_sg = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb-sg"])
     wordpress_alb    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb"])
     wordpress_acm    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp.saritasa-camps.link"])
-
   }
   efs_id       = module.efs.id
   random_pswd  = random_password.password.result
@@ -108,7 +108,6 @@ module "wordpress_sg" {
 #   │ key                 │
 #   └─────────────────────┘
 
-
 module "ssh_key_pair" {
   source                = "cloudposse/key-pair/aws"
   stage                 = var.environment
@@ -174,9 +173,6 @@ module "wordpress_rds_sg" {
 #   ┌─────────────────────┐
 #   │ rds                 │
 #   └─────────────────────┘
-
-# pass
-
 
 module "wordpress_rds" {
   source     = "terraform-aws-modules/rds/aws"
@@ -292,6 +288,7 @@ module "alb" {
 
   target_groups = [
     {
+      name             = local.labels.wordpress_alb_tg
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
@@ -318,7 +315,7 @@ module "alb" {
       target_group_index = 0
     }
   ]
-  depends_on = [data.aws_instance.ec2-1, data.aws_instance.ec2-2]
+#   depends_on = [data.aws_instance.ec2-1, data.aws_instance.ec2-2]
 }
 
 #   ┌─────────────────────┐

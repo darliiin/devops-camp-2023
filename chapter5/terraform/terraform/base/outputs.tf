@@ -7,9 +7,13 @@ output "efs_id" {
   value = module.efs.id
 }
 
-output "rout_name" {
-  value = aws_route53_record.Aroute53.fqdn
-}
+# output "alb_url" {
+#   value = module.alb.lb_dns_name
+# }
+#
+# output "rout_name" {
+#   value = aws_route53_record.Aroute53.fqdn
+# }
 
 output "password" {
   sensitive = true

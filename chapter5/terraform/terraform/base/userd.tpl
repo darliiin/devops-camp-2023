@@ -116,6 +116,9 @@ define('SECURE_AUTH_SALT', '${random_string_array[5]}');
 define('LOGGED_IN_SALT',   '${random_string_array[6]}');
 define('NONCE_SALT',       '${random_string_array[7]}');
 
+if (\$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+  \$_SERVER['HTTPS'] = 'on';
+
 \$table_prefix = 'wp_';
 
 define( 'WP_DEBUG', false );
