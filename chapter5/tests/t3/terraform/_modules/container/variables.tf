@@ -1,5 +1,5 @@
 variable "container_image" {
-  description = "Value of the name for the Docker container"
+  description = "Docker image name"
   type        = string
 }
 
@@ -10,7 +10,7 @@ variable "container_image_keep_locally" {
 }
 
 variable "container_name" {
-  description = "Value of the name for the Docker container"
+  description = "Docker container name"
   type        = string
   validation {
     condition     = can(regex("^(saritasa-devops-camps-2023-).*", var.container_name))
@@ -19,26 +19,22 @@ variable "container_name" {
 }
 
 variable "container_ports" {
-  description = "Value of the name for the Docker container"
+  description = "Map of internal and external ports for the Docker container"
   type        = map(any)
   default = {
     internal = 6379
     external = 6379
   }
-  #   validation {
-  #     condition     = var.container_ports.internal == "6379" && var.container_ports.external == "6379"
-  #     error_message = "Container internal port should be less 1000 and external above or equal to 8000"
-  #   }
 }
 
 variable "volumes_host_path" {
-  description = "Path to volume host"
+  description = "Path to volume on host (local machine)"
   type        = string
   default     = ""
 }
 
 variable "volumes_container_path" {
-  description = "Path to volume container"
+  description = "Path to volume inside container"
   type        = string
   default     = ""
 }
@@ -62,4 +58,3 @@ variable "environment" {
     error_message = "Environment could be one of dev | staging | prod"
   }
 }
-

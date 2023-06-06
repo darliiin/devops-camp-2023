@@ -18,7 +18,7 @@ resource "docker_container" "container" {
 
   provisioner "local-exec" {
     command     = "./delete.sh"
-     working_dir = path.module
+    working_dir = path.module
     when        = destroy
   }
 }

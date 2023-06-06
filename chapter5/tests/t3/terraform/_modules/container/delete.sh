@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# deleting folder with generated html file
 SCRIPT_DIR="$(dirname "$0")"
-folder="${SCRIPT_DIR}/../../../dev"
+folder = "dev"
 
-if [ -d "${folder}" ]; then
-  sudo rm -rf "${folder}"
+path="${SCRIPT_DIR}/../../../${folder}"
+
+if [ -d "${path}" ]; then
+  sudo rm -rf "${path}"
 fi
