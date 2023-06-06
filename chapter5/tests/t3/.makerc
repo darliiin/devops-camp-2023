@@ -1,0 +1,72 @@
+# ----------------------------------------------------------------------------
+# Required Variables
+#
+# ============================================================================
+
+CLIENT=saritasa
+PROJECT=workspaces
+TF_ORG=saritasa-devops-camps
+DOMAIN=saritasa-camps.link
+
+AWS_ACCOUNT_ID=$(shell aws sts get-caller-identity --output json | jq -r ".Account")
+AWS_REGION != echo $(AWS_DEFAULT_REGION)
+AWS_PROFILE=${PROJECT}/administrators
+
+# ----------------------------------------------------------------------------
+# Validation Required Variables
+#
+# ============================================================================
+
+# obtain your own IP
+#
+MY_IP=$(shell curl -s ipinfo.io/ip)
+
+# allowed list of IPs from which you can run terraform commands
+# make sure we send entire traffic through the VPN
+# you can do it with something like this:
+# nmcli connection up VPN && sudo ip route add default via $(ip -4 addr show vpn0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') dev vpn0
+#
+# see a list of approved IP addresses:
+# https://github.com/saritasa-nest/saritasa-devops-docs/blob/main/_infra/infra-ips.md
+#
+# 52.89.104.195, 35.80.113.210, 44.240.153.133 are cloud vpc NAT gateways
+#
+ALLOWED_IPS="99.128.21.249 54.148.180.72 52.58.61.42 52.220.86.167 195.201.120.196 195.201.138.87 52.89.104.195 35.80.113.210 44.240.153.133 76.253.161.130"
+
+# The shell assignment operator ‘!=’ can be used to execute a shell script and set a variable to its output.
+# This operator first evaluates the right-hand side, then passes that result to the shell for execution.
+# If the result of the execution ends in a newline, that one newline is removed;
+# all other newlines are replaced by spaces. The resulting string is then placed into the named recursively-expanded variable.
+# more info: https://www.gnu.org/software/make/manual/html_node/Setting.html#Setting
+#
+ALLOWED_IP != echo $(ALLOWED_IPS) | grep -wo $(MY_IP)
+
+# ----------------------------------------------------------------------------
+# Reusable funcs
+#
+# ============================================================================
+
+# display header and bold message
+# $1 - text to display
+define header
+	@if test "$(POD_NAME)" == "" ; then \
+		tput setaf 1; \
+		echo "════════════════════════════════════════════════════════════════════════════════════════"; \
+		tput setaf 2; \
+		tput bold; \
+		echo " "💬 ${1}; \
+		tput setaf 1; \
+		echo "════════════════════════════════════════════════════════════════════════════════════════"; \
+		tput sgr0; \
+	else \
+		echo "════════════════════════════════════════════════════════════════════════════════════════"; \
+		echo " "💬 ${1}; \
+		echo "════════════════════════════════════════════════════════════════════════════════════════"; \
+	fi
+endef
+
+# display green bold message
+# $1 - text to display
+define ok
+	echo "✔ ${1}"
+endef
