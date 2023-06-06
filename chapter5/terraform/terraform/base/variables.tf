@@ -50,16 +50,6 @@ variable "instance_type" {
   type        = string
 }
 
-variable "instance_names" {
-  type    = set(string)
-  default = ["0", "1"]
-}
-
-variable "name_ec2" {
-  type    = list(string)
-  default = ["0", "1"]
-}
-
 /*
   ┌───────────────────┐
   │ rds               │
