@@ -1,5 +1,5 @@
 data "aws_vpc" "target" {
-  tags = var.cache_vpc_tags
+  tags = var.vpc_tags
 }
 
 data "aws_subnets" "wordpress" {
@@ -9,31 +9,20 @@ data "aws_subnets" "wordpress" {
   }
 }
 
-data "aws_instance" "ec2-1" {
+data "aws_instance" "ec2_instances" {
+
+  count = var.wordpress_instances_count
   filter {
     name   = "tag:Name"
-    values = ["${var.environment}-${var.client}-${var.project}-ec2-${var.name_ec2[0]}"]
+    values = ["${local.labels.wordpress_ec2}-${count.index}"]
   }
+
   filter {
     name   = "instance-state-name"
     values = ["running"]
   }
+
   depends_on = [
-    module.ec2_instance
+    module.wordpress_ec2_instance
   ]
 }
-
-data "aws_instance" "ec2-2" {
-  filter {
-    name   = "tag:Name"
-    values = ["${var.environment}-${var.client}-${var.project}-ec2-${var.name_ec2[1]}"]
-  }
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
-  }
-  depends_on = [
-    module.ec2_instance
-  ]
-}
-

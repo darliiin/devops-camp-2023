@@ -1,30 +1,31 @@
-variable "cache_vpc_tags" {
-  description = "VPC tags to place cache host into"
+variable "vpc_tags" {
+  description = "VPC tags to place host into"
   type        = map(string)
   default = {
     Name = "default"
   }
 }
 
-variable "cache_availability_zones" {
-  description = "Instance Availability Zones of the Cache host"
+variable "availability_zones" {
+  description = "Instance Availability Zones of host"
   type        = list(string)
 }
 
-variable "cache_engine" {
-  description = "ElastiCache Engine, like redis"
+variable "engine" {
+  description = "Engine, like redis"
   type        = string
 }
 
+
 /*
-  ┌───────────────────┐
-  │ instance sg       │
-  └───────────────────┘
+  ┌───────────────┐
+  │ office ip     │
+  └───────────────┘
 */
 
-variable "egress_rule_ec2_sg" {
-  description = "Egress rule"
-  type        = list(map(string))
+variable "office_ip" {
+  description = "Office ip"
+  type        = string
 }
 
 
@@ -34,14 +35,29 @@ variable "egress_rule_ec2_sg" {
   └───────────────────┘
 */
 
+variable "wordpress_instances_count" {
+  description = "number of available instances"
+  type        = number
+}
+
+variable "instance_ami" {
+  description = "ami for instances"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "instance type"
+  type        = string
+}
+
 variable "instance_names" {
   type    = set(string)
-  default = ["1", "2"]
+  default = ["0", "1"]
 }
 
 variable "name_ec2" {
   type    = list(string)
-  default = ["1", "2"]
+  default = ["0", "1"]
 }
 
 /*
@@ -50,54 +66,55 @@ variable "name_ec2" {
   └───────────────────┘
 */
 
+variable "family_rds" {
+  type        = string
+  description = "family rds"
+}
+
+variable "engine_rds" {
+  type        = string
+  description = "engine rds"
+}
+
+variable "instance_class_rds" {
+  type        = string
+  description = "instance class rds"
+}
+
+variable "allocated_storage_rds" {
+  type        = number
+  description = "allocated storage rds"
+}
+
+variable "major_engine_version_rds" {
+  type        = string
+  description = "major engine version rds"
+}
+
+variable "maintenance_window_rds" {
+  type        = string
+  description = "maintenance window"
+}
+
+variable "backup_window_rds" {
+  type        = string
+  description = "backup window"
+}
+
 variable "db_name" {
   type        = string
-  description = "db name"
+  description = "database name"
 }
 
-variable "username" {
+variable "db_username" {
   type        = string
-  description = "username"
+  description = "database username"
 
 }
 
-variable "port" {
+variable "db_port" {
   type        = number
-  description = "port"
-
-}
-
-/*
-  ┌───────────────────┐
-  │ rds sg            │
-  └───────────────────┘
-*/
-
-variable "ingress_rule_rds_sg" {
-  description = "Ingress rule"
-  type        = list(map(string))
-}
-
-variable "egress_rule_rds_sg" {
-  description = "Egress rule"
-  type        = list(map(string))
-}
-
-
-/*
-  ┌──────────────┐
-  │ alb sg       │
-  └──────────────┘
-*/
-
-variable "ingress_rule_alb_sg" {
-  description = "Ingress rule"
-  type        = list(map(string))
-}
-
-variable "egress_rule_alb_sg" {
-  description = "Egress rule"
-  type        = list(map(string))
+  description = "database port"
 }
 
 /* 

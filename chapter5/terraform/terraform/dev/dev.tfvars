@@ -2,32 +2,42 @@
   ┌──────────────────────────────────────┐
   │ env=specific configuration variables │
   └──────────────────────────────────────┘
- */
+*/
 
 environment = "dev"
 
+
+/*
+  ┌────────────┐
+  │ office ip  │
+  └────────────┘
+*/
+
+office_ip = "54.148.180.72/32"
+
+
+/*
+  ┌──────────────┐
+  │ unstances    │
+  └──────────────┘
+*/
+wordpress_instances_count = 2
+
+instance_ami  = "ami-08333bccc35d71140"
+instance_type = "t3.micro"
 
 /* 
   ┌──────────────────────────────────────┐
   │ wordpress configuration variables    │
   └──────────────────────────────────────┘
- */
+*/
 
-cache_vpc_tags = {
+vpc_tags = {
   Name = "default"
 }
 
-cache_availability_zones = ["us-east-2a", "us-east-2b"]
-cache_engine             = "wordpress"
-
-egress_rule_ec2_sg = [
-  {
-    rule        = "all-all"
-    description = "Open all ipv4 connection"
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
-
+availability_zones = ["us-east-2a", "us-east-2b"]
+engine             = "wordpress"
 
 
 /*
@@ -36,59 +46,17 @@ egress_rule_ec2_sg = [
   └────────────────────────────────┘
 */
 
-db_name  = "dev_daria_nalimova_user_rds"
-username = "admin"
-port     = "3306"
+family_rds               = "mysql8.0"
+engine_rds               = "mysql"
+instance_class_rds       = "db.t4g.micro"
+allocated_storage_rds    = 20
+major_engine_version_rds = "8.0"
 
-/*
-  ┌────────────────────────────────┐
-  │ rds sg                         │
-  └────────────────────────────────┘
-*/
-
-ingress_rule_rds_sg = [
-  {
-    rule        = "mysql-tcp"
-    cidr_blocks = "54.148.180.72/32"
-  }
-]
-
-egress_rule_rds_sg = [
-  {
-    rule        = "all-all"
-    description = "Open all ipv4 connection"
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
+maintenance_window_rds = "Mon:00:00-Mon:03:00"
+backup_window_rds      = "03:00-06:00"
 
 
-/*
-  ┌────────────────────────────────┐
-  │ alb sg                         │
-  └────────────────────────────────┘
- */
+db_name     = "dev_daria_nalimova_user_rds"
+db_username = "admin"
+db_port     = "3306"
 
-ingress_rule_alb_sg = [
-  {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    description = "Open https connection"
-    cidr_blocks = "0.0.0.0/0"
-  },
-  {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    description = "Open http connection"
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
-
-egress_rule_alb_sg = [
-  {
-    rule        = "all-all"
-    description = "Open all ipv4 connection"
-    cidr_blocks = "0.0.0.0/0"
-  }
-]
