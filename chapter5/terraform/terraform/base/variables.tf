@@ -58,8 +58,6 @@ variable "wordpress_wpconfig_count_characters" {
   type        = number
 }
 
-
-
 /*
   ┌───────────────────┐
   │ rds               │

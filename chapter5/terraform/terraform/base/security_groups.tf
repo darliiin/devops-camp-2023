@@ -78,8 +78,6 @@ module "wordpress_rds_sg" {
   tags = var.tags
 }
 
-
-
 #   ┌─────────────────────┐
 #   │ alb sg              │
 #   └─────────────────────┘
@@ -117,7 +115,3 @@ module "wordpress_alb_sg" {
     }
   ]
 }
-
-
-
-

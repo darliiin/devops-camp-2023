@@ -9,20 +9,17 @@ data "aws_subnets" "wordpress" {
   }
 }
 
-data "aws_instance" "ec2_instances" {
+data "aws_subnet" "wordpress_subnet_a_zone" {
+  vpc_id            = data.aws_vpc.target.id
+  availability_zone = "us-east-2a"
+}
 
-  count = var.wordpress_instances_count
-  filter {
-    name   = "tag:Name"
-    values = ["${local.labels.wordpress_ec2}-${count.index}"]
-  }
+data "aws_subnet" "wordpress_subnet_b_zone" {
+  vpc_id            = data.aws_vpc.target.id
+  availability_zone = "us-east-2b"
+}
 
-  filter {
-    name   = "instance-state-name"
-    values = ["running"]
-  }
-
-  depends_on = [
-    module.wordpress_ec2_instance
-  ]
+data "aws_subnet" "wordpress_subnet_c_zone" {
+  vpc_id            = data.aws_vpc.target.id
+  availability_zone = "us-east-2c"
 }

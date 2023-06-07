@@ -5,13 +5,11 @@
 resource "aws_acm_certificate" "cert" {
   domain_name       = local.labels.wordpress_acm
   validation_method = "DNS"
-
 }
 
 data "aws_route53_zone" "zone_record" {
   name         = "saritasa-camps.link"
   private_zone = false
-
 }
 
 resource "aws_route53_record" "record" {
@@ -29,7 +27,6 @@ resource "aws_route53_record" "record" {
   ttl             = 60
   type            = each.value.type
   zone_id         = data.aws_route53_zone.zone_record.zone_id
-
 }
 
 resource "aws_acm_certificate_validation" "certificate" {
@@ -48,5 +45,3 @@ resource "aws_route53_record" "A_route53" {
     evaluate_target_health = true
   }
 }
-
-

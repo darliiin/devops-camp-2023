@@ -39,14 +39,6 @@ cd /efs
 sudo chmod go+rw .
 sudo mount -t efs -o tls ${efs_id}:/ .
 
-
-# wordpress
-
-# wget https://wordpress.org/latest.tar.gz
-# tar -xzf latest.tar.gz
-# latest.tar.gz  wordpress
-# cd wordpress
-
 cd /home/ec2-user
 wget https://wordpress.org/latest.tar.gz
 tar -xzf latest.tar.gz
@@ -107,14 +99,14 @@ define( 'DB_HOST', '${endpoint_rds}' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
-define('AUTH_KEY',         '${random_string_array[0]}');
-define('SECURE_AUTH_KEY',  '${random_string_array[1]}');
-define('LOGGED_IN_KEY',    '${random_string_array[2]}');
-define('NONCE_KEY',        '${random_string_array[3]}');
-define('AUTH_SALT',        '${random_string_array[4]}');
-define('SECURE_AUTH_SALT', '${random_string_array[5]}');
-define('LOGGED_IN_SALT',   '${random_string_array[6]}');
-define('NONCE_SALT',       '${random_string_array[7]}');
+define('AUTH_KEY',         '${AUTH_KEY}');
+define('SECURE_AUTH_KEY',  '${SECURE_AUTH_KEY}');
+define('LOGGED_IN_KEY',    '${LOGGED_IN_KEY}');
+define('NONCE_KEY',        '${NONCE_KEY}');
+define('AUTH_SALT',        '${AUTH_SALT}');
+define('SECURE_AUTH_SALT', '${SECURE_AUTH_SALT}');
+define('LOGGED_IN_SALT',   '${LOGGED_IN_SALT}');
+define('NONCE_SALT',       '${NONCE_SALT}');
 
 if (\$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
   \$_SERVER['HTTPS'] = 'on';

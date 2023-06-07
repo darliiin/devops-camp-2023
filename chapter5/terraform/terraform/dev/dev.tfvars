@@ -6,7 +6,6 @@
 
 environment = "dev"
 
-
 /*
   ┌────────────┐
   │ office ip  │
@@ -14,7 +13,6 @@ environment = "dev"
 */
 
 office_ip = "54.148.180.72/32"
-
 
 /*
   ┌──────────────┐
@@ -68,7 +66,6 @@ db_major_engine_version = "8.0"
 
 db_maintenance_window = "Mon:00:00-Mon:03:00"
 db_backup_window      = "03:00-06:00"
-
 
 db_name     = "dev_daria_nalimova_user_rds"
 db_username = "admin"

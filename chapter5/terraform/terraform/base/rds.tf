@@ -8,17 +8,6 @@ resource "random_password" "password" {
   override_special = "_-!%^&*()[]{}<>"
 }
 
-#   ┌──────────────────────────────────────┐
-#   │ random string for wp-config.php      │
-#   └──────────────────────────────────────┘
-
-resource "random_string" "unique_keys_for_wpconfig" {
-  count            = var.wordpress_wpconfig_random_count_lines
-  length           = var.wordpress_wpconfig_count_characters
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
 #   ┌─────────────────────┐
 #   │ rds                 │
 #   └─────────────────────┘
@@ -44,6 +33,4 @@ module "wordpress_rds" {
   subnet_ids                          = data.aws_subnets.wordpress.ids
   create_random_password              = false
   password                            = random_password.password.result
-
 }
-

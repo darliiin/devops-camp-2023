@@ -9,17 +9,16 @@ module "efs" {
   name = local.labels.wordpress_efs
   tags = var.tags
 
-
   # Mount targets / security group
   mount_targets = {
     "us-east-2-1a" = {
-      subnet_id = data.aws_subnets.wordpress.ids[2]
+      subnet_id = data.aws_subnet.wordpress_subnet_a_zone.id
     }
     "us-east-2-1b" = {
-      subnet_id = data.aws_subnets.wordpress.ids[0]
+      subnet_id = data.aws_subnet.wordpress_subnet_b_zone.id
     }
     "us-east-2-1c" = {
-      subnet_id = data.aws_subnets.wordpress.ids[1]
+      subnet_id = data.aws_subnet.wordpress_subnet_c_zone.id
     }
   }
 
