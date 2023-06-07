@@ -5,7 +5,8 @@ resource "docker_image" "container" {
 
 resource "docker_container" "container" {
   image = docker_image.container.image_id
-  name  = var.container_name
+  name = var.container_name
+
   ports {
     internal = var.container_ports.internal
     external = var.container_ports.external
@@ -17,8 +18,12 @@ resource "docker_container" "container" {
   }
 
   provisioner "local-exec" {
-    command     = "./delete.sh"
-    working_dir = path.module
-    when        = destroy
+    when    = destroy
+    command = "rm -rf '${self.volumes.*.host_path[0]}'"
   }
+  #   provisioner "local-exec" {
+  #     command     = "./delete.sh"
+  #     working_dir = path.module
+  #     when        = destroy
+  #   }
 }

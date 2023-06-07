@@ -12,10 +12,6 @@ variable "container_image_keep_locally" {
 variable "container_name" {
   description = "Docker container name"
   type        = string
-  validation {
-    condition     = can(regex("^(saritasa-devops-camps-2023-).*", var.container_name))
-    error_message = "Container name should be prefixed with saritasa-devops-camps-2023-"
-  }
 }
 
 variable "container_ports" {
