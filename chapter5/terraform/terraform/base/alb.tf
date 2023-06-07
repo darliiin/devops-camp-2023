@@ -12,6 +12,24 @@ module "alb" {
   subnets         = data.aws_subnets.wordpress.ids
   security_groups = [module.wordpress_alb_sg.security_group_id]
 
+  #    target_groups = [
+  #     {
+  #       name             = local.labels.wordpress_alb_tg
+  #       backend_protocol = "HTTP"
+  #       backend_port     = 80
+  #       target_type      = "instance"
+  #       targets = {
+  #         my_target = {
+  #           target_id = data.aws_instance.ec2-0.id
+  #           port      = 80
+  #         }
+  #         my_other_target = {
+  #           target_id = data.aws_instance.ec2-1.id
+  #           port      = 80
+  #         }
+  #       }
+  #     }
+  #   ]
   target_groups = [
     {
       name             = local.labels.wordpress_alb_tg

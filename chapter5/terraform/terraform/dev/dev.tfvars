@@ -21,10 +21,16 @@ office_ip = "54.148.180.72/32"
   │ unstances    │
   └──────────────┘
 */
+
 wordpress_instances_count = 2
 
-instance_ami  = "ami-08333bccc35d71140"
-instance_type = "t3.micro"
+/*
+link AMI: https://us-east-2.console.aws.amazon.com/ec2/home?region=us-east-2#ImageDetails:imageId=ami-08333bccc35d71140
+AMI name: al2023-ami-2023.0.20230503.0-kernel-6.1-x86_64
+*/
+
+wordpress_instances_ami  = "ami-08333bccc35d71140"
+wordpress_instances_type = "t3.micro"
 
 /* 
   ┌──────────────────────────────────────┐
@@ -36,8 +42,16 @@ vpc_tags = {
   Name = "default"
 }
 
-availability_zones = ["us-east-2a", "us-east-2b"]
-engine             = "wordpress"
+wordpress_availability_zones = ["us-east-2a", "us-east-2b"]
+
+/*
+  ┌────────────────────────────────┐
+  │ wp-config.php                  │
+  └────────────────────────────────┘
+*/
+
+wordpress_wpconfig_random_count_lines = 8
+wordpress_wpconfig_count_characters   = 64
 
 
 /*
@@ -46,14 +60,14 @@ engine             = "wordpress"
   └────────────────────────────────┘
 */
 
-family_rds               = "mysql8.0"
-engine_rds               = "mysql"
-instance_class_rds       = "db.t4g.micro"
-allocated_storage_rds    = 20
-major_engine_version_rds = "8.0"
+db_family              = "mysql8.0"
+db_engine               = "mysql"
+db_instance_class       = "db.t4g.micro"
+db_allocated_storage    = 20
+db_major_engine_version = "8.0"
 
-maintenance_window_rds = "Mon:00:00-Mon:03:00"
-backup_window_rds      = "03:00-06:00"
+db_maintenance_window = "Mon:00:00-Mon:03:00"
+db_backup_window      = "03:00-06:00"
 
 
 db_name     = "dev_daria_nalimova_user_rds"

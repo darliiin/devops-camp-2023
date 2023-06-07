@@ -1,5 +1,5 @@
 output "instance_id" {
-  value = [for i in range(var.wordpress_instances_count) : module.wordpress_ec2_instance[i].id]
+  value = module.wordpress_ec2_instance[*].id
 }
 
 output "efs_id" {

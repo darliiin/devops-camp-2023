@@ -6,16 +6,10 @@ variable "vpc_tags" {
   }
 }
 
-variable "availability_zones" {
+variable "wordpress_availability_zones" {
   description = "Instance Availability Zones of host"
   type        = list(string)
 }
-
-variable "engine" {
-  description = "Engine, like redis"
-  type        = string
-}
-
 
 /*
   ┌───────────────┐
@@ -28,7 +22,6 @@ variable "office_ip" {
   type        = string
 }
 
-
 /*
   ┌───────────────────┐
   │ instance          │
@@ -36,19 +29,36 @@ variable "office_ip" {
 */
 
 variable "wordpress_instances_count" {
-  description = "number of available instances"
+  description = "number of available wordpress instances"
   type        = number
 }
 
-variable "instance_ami" {
-  description = "ami for instances"
+variable "wordpress_instances_ami" {
+  description = "ami for wordpress instances"
   type        = string
 }
 
-variable "instance_type" {
-  description = "instance type"
+variable "wordpress_instances_type" {
+  description = "wordpress instances type"
   type        = string
 }
+
+/*
+  ┌────────────────────────────────┐
+  │ wp-config.php                  │
+  └────────────────────────────────┘
+*/
+
+variable "wordpress_wpconfig_random_count_lines" {
+  description = "number of lines authentication Unique Keys and Salts for wordpress"
+  type        = number
+}
+variable "wordpress_wpconfig_count_characters" {
+  description = "number of characters authentication Unique Keys and Salts for wordpress"
+  type        = number
+}
+
+
 
 /*
   ┌───────────────────┐
@@ -56,37 +66,37 @@ variable "instance_type" {
   └───────────────────┘
 */
 
-variable "family_rds" {
+variable "db_family" {
   type        = string
   description = "family rds"
 }
 
-variable "engine_rds" {
+variable "db_engine" {
   type        = string
   description = "engine rds"
 }
 
-variable "instance_class_rds" {
+variable "db_instance_class" {
   type        = string
   description = "instance class rds"
 }
 
-variable "allocated_storage_rds" {
+variable "db_allocated_storage" {
   type        = number
   description = "allocated storage rds"
 }
 
-variable "major_engine_version_rds" {
+variable "db_major_engine_version" {
   type        = string
   description = "major engine version rds"
 }
 
-variable "maintenance_window_rds" {
+variable "db_maintenance_window" {
   type        = string
   description = "maintenance window"
 }
 
-variable "backup_window_rds" {
+variable "db_backup_window" {
   type        = string
   description = "backup window"
 }

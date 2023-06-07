@@ -1,5 +1,5 @@
 #   ┌─────────────────────┐
-#   │ sg for instance      │
+#   │ sg for instance     │
 #   └─────────────────────┘
 
 module "wordpress_sg" {
@@ -63,7 +63,7 @@ module "wordpress_rds_sg" {
   ingress_with_cidr_blocks = [
     {
       rule        = "mysql-tcp"
-      cidr_blocks = "54.148.180.72/32"
+      cidr_blocks = var.office_ip
     }
   ]
 
