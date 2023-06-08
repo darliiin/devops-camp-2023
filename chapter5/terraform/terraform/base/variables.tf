@@ -1,11 +1,3 @@
-variable "wordpress_vpc_tags" {
-  description = "VPC tags to place host into"
-  type        = map(string)
-  default = {
-    Name = "default"
-  }
-}
-
 /*
   ┌───────────────┐
   │ office ip     │
@@ -18,10 +10,18 @@ variable "office_ip" {
 }
 
 /*
-  ┌───────────────────┐
-  │ instance          │
-  └───────────────────┘
+  ┌───────────────┐
+  │ wordpress     │
+  └───────────────┘
 */
+
+variable "wordpress_vpc_tags" {
+  description = "VPC tags to place host into"
+  type        = map(string)
+  default = {
+    Name = "default"
+  }
+}
 
 variable "wordpress_availability_zones" {
   description = "Instance Availability Zones of host"
