@@ -3,24 +3,22 @@
 #   └─────────────────────┘
 
 module "alb" {
-  source = "terraform-aws-modules/alb/aws"
-  name   = local.labels.wordpress_alb
-
+  source             = "terraform-aws-modules/alb/aws"
+  name               = local.labels.wordpress_alb
   load_balancer_type = "application"
-
-  vpc_id          = data.aws_vpc.target.id
-  subnets         = data.aws_subnets.wordpress.ids
-  security_groups = [module.wordpress_alb_sg.security_group_id]
+  vpc_id             = data.aws_vpc.target.id
+  subnets            = data.aws_subnets.wordpress.ids
+  security_groups    = [module.wordpress_alb_sg.security_group_id]
 
   target_groups = [
     {
-      name             = local.labels.wordpress_alb_tg
-      backend_protocol = "HTTP"
       backend_port     = 80
+      backend_protocol = "HTTP"
       target_type      = "instance"
+      name             = local.labels.wordpress_alb_tg
       targets = {
-        for instance in module.wordpress_ec2_instance : "my_target_${instance.id}" => {
-          target_id = instance.id
+        for i in range(var.wordpress_instances_count) : "my_target_${i + 1}" => {
+          target_id = module.wordpress_ec2_instance[i].id
           port      = 80
         }
       }
@@ -28,7 +26,6 @@ module "alb" {
   ]
 
   tags = var.tags
-
   https_listeners = [
     {
       port               = 443
@@ -37,4 +34,5 @@ module "alb" {
       target_group_index = 0
     }
   ]
+  depends_on = [module.wordpress_ec2_instance]
 }

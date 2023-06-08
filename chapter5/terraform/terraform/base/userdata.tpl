@@ -92,12 +92,12 @@ cd /efs
 cat << EOF > wp-config.php
 
 <?php
-define( 'DB_NAME', '${db_name_rds}' );
-define( 'DB_USER', 'admin' );
-define( 'DB_PASSWORD', '${random_pwd}' );
-define( 'DB_HOST', '${endpoint_rds}' );
-define( 'DB_CHARSET', 'utf8' );
-define( 'DB_COLLATE', '' );
+define( 'DB_NAME',         '${db_name_rds}' );
+define( 'DB_USER',         'admin' );
+define( 'DB_PASSWORD',     '${random_pwd}' );
+define( 'DB_HOST',         '${endpoint_rds}' );
+define( 'DB_CHARSET',      'utf8' );
+define( 'DB_COLLATE',      '' );
 
 define('AUTH_KEY',         '${AUTH_KEY}');
 define('SECURE_AUTH_KEY',  '${SECURE_AUTH_KEY}');

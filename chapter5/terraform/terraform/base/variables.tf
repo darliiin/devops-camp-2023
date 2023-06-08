@@ -1,14 +1,9 @@
-variable "vpc_tags" {
+variable "wordpress_vpc_tags" {
   description = "VPC tags to place host into"
   type        = map(string)
   default = {
     Name = "default"
   }
-}
-
-variable "wordpress_availability_zones" {
-  description = "Instance Availability Zones of host"
-  type        = list(string)
 }
 
 /*
@@ -27,6 +22,11 @@ variable "office_ip" {
   │ instance          │
   └───────────────────┘
 */
+
+variable "wordpress_availability_zones" {
+  description = "Instance Availability Zones of host"
+  type        = list(string)
+}
 
 variable "wordpress_instances_count" {
   description = "number of available wordpress instances"
@@ -49,11 +49,7 @@ variable "wordpress_instances_type" {
   └────────────────────────────────┘
 */
 
-variable "wordpress_wpconfig_random_count_lines" {
-  description = "number of lines authentication Unique Keys and Salts for wordpress"
-  type        = number
-}
-variable "wordpress_wpconfig_count_characters" {
+variable "wordpress_wpconfig_secrets_length" {
   description = "number of characters authentication Unique Keys and Salts for wordpress"
   type        = number
 }

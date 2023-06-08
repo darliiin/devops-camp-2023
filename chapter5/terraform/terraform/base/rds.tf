@@ -2,7 +2,7 @@
 #   │ random pass for rds │
 #   └─────────────────────┘
 
-resource "random_password" "password" {
+resource "random_password" "password_for_db" {
   length           = 12
   special          = true
   override_special = "_-!%^&*()[]{}<>"
@@ -14,8 +14,8 @@ resource "random_password" "password" {
 
 module "wordpress_rds" {
   source                              = "terraform-aws-modules/rds/aws"
-  identifier                          = local.labels.wordpress_rds
   version                             = "5.9.0"
+  identifier                          = local.labels.wordpress_rds
   family                              = var.db_family
   engine                              = var.db_engine
   instance_class                      = var.db_instance_class
@@ -32,5 +32,5 @@ module "wordpress_rds" {
   create_db_subnet_group              = true
   subnet_ids                          = data.aws_subnets.wordpress.ids
   create_random_password              = false
-  password                            = random_password.password.result
+  password                            = random_password.password_for_db.result
 }

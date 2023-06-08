@@ -34,7 +34,7 @@ resource "aws_acm_certificate_validation" "certificate" {
   validation_record_fqdns = values(aws_route53_record.record)[*].fqdn
 }
 
-resource "aws_route53_record" "A_route53" {
+resource "aws_route53_record" "a_type_route53" {
   zone_id = data.aws_route53_zone.zone_record.zone_id
   name    = aws_acm_certificate.cert.domain_name
   type    = "A"
@@ -44,4 +44,6 @@ resource "aws_route53_record" "A_route53" {
     zone_id                = module.alb.lb_zone_id
     evaluate_target_health = true
   }
+
+  depends_on = [module.alb]
 }

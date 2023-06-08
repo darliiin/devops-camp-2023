@@ -11,10 +11,10 @@ output "alb_url" {
 }
 
 output "record_name" {
-  value = aws_route53_record.A_route53.fqdn
+  value = aws_route53_record.a_type_route53.fqdn
 }
 
-output "password" {
+output "password_for_db" {
   sensitive = true
-  value     = random_password.password.result
+  value     = random_password.password_for_db.result
 }

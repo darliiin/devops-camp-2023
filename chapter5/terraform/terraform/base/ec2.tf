@@ -32,25 +32,21 @@ module "ssh_key_pair" {
 
 module "wordpress_ec2_instance" {
 
-  source = "terraform-aws-modules/ec2-instance/aws"
-  count  = var.wordpress_instances_count
-  name   = "${local.labels.wordpress_ec2}-${count.index}"
-
+  source                 = "terraform-aws-modules/ec2-instance/aws"
+  count                  = var.wordpress_instances_count
+  name                   = "${local.labels.wordpress_ec2}-${count.index}"
   ami                    = var.wordpress_instances_ami
   instance_type          = var.wordpress_instances_type
   key_name               = module.ssh_key_pair.key_name
   vpc_security_group_ids = [module.wordpress_sg.security_group_id]
   subnet_id              = data.aws_subnet.wordpress_subnet_a_zone.id
   tags                   = var.tags
-
-  user_data = templatefile("${path.cwd}/terraform/base/userd.tpl", {
-    random_pwd   = random_password.password.result
-    endpoint_rds = module.wordpress_rds.db_instance_endpoint
-    db_name_rds  = module.wordpress_rds.db_instance_name
-    efs_id       = module.efs.id
-
-    # Authentication Unique Keys and Salts for wordpress
-    AUTH_KEY         = random_string.AUTH_KEY.result
+  user_data = templatefile("${path.cwd}/terraform/base/userdata.tpl", {
+    random_pwd       = random_password.password_for_db.result
+    endpoint_rds     = module.wordpress_rds.db_instance_endpoint
+    db_name_rds      = module.wordpress_rds.db_instance_name
+    efs_id           = module.efs.id
+    AUTH_KEY         = random_string.AUTH_KEY.result # Authentication Unique Keys and Salts for wordpress
     SECURE_AUTH_KEY  = random_string.SECURE_AUTH_KEY.result
     LOGGED_IN_KEY    = random_string.LOGGED_IN_KEY.result
     NONCE_KEY        = random_string.NONCE_KEY.result
@@ -58,7 +54,6 @@ module "wordpress_ec2_instance" {
     SECURE_AUTH_SALT = random_string.SECURE_AUTH_SALT.result
     LOGGED_IN_SALT   = random_string.LOGGED_IN_SALT.result
     NONCE_SALT       = random_string.NONCE_SALT.result
-
   })
 }
 
@@ -67,50 +62,49 @@ module "wordpress_ec2_instance" {
 #   └──────────────────────────────────────┘
 
 resource "random_string" "AUTH_KEY" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "SECURE_AUTH_KEY" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "LOGGED_IN_KEY" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "NONCE_KEY" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "AUTH_SALT" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "SECURE_AUTH_SALT" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "LOGGED_IN_SALT" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
 resource "random_string" "NONCE_SALT" {
-  length           = var.wordpress_wpconfig_count_characters
+  length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
-

@@ -3,14 +3,12 @@
 #   └─────────────────────┘
 
 module "wordpress_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "4.17.2"
-  name    = local.labels.wordpress_sg
-
+  source      = "terraform-aws-modules/security-group/aws"
+  version     = "4.17.2"
+  name        = local.labels.wordpress_sg
   description = "Security group for WordPress"
   vpc_id      = data.aws_vpc.target.id
-
-  tags = var.tags
+  tags        = var.tags
 
   ingress_with_source_security_group_id = [
     {
@@ -84,7 +82,7 @@ module "wordpress_rds_sg" {
 
 module "wordpress_alb_sg" {
   source      = "terraform-aws-modules/security-group/aws"
-  version     = "5.0.0"
+  version     = "4.17.2"
   name        = local.labels.wordpress_alb_sg
   description = "Security group for ALB"
   vpc_id      = data.aws_vpc.target.id

@@ -19,5 +19,4 @@ provider "aws" {
       Camp  = true
     }
   }
-
 }
