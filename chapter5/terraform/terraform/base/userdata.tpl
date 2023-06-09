@@ -99,14 +99,14 @@ define( 'DB_HOST',         '${endpoint_rds}' );
 define( 'DB_CHARSET',      'utf8' );
 define( 'DB_COLLATE',      '' );
 
-define('AUTH_KEY',         '${AUTH_KEY}');
-define('SECURE_AUTH_KEY',  '${SECURE_AUTH_KEY}');
-define('LOGGED_IN_KEY',    '${LOGGED_IN_KEY}');
-define('NONCE_KEY',        '${NONCE_KEY}');
-define('AUTH_SALT',        '${AUTH_SALT}');
-define('SECURE_AUTH_SALT', '${SECURE_AUTH_SALT}');
-define('LOGGED_IN_SALT',   '${LOGGED_IN_SALT}');
-define('NONCE_SALT',       '${NONCE_SALT}');
+define('AUTH_KEY',         '${auth_key}');
+define('SECURE_AUTH_KEY',  '${secure_auth_key}');
+define('LOGGED_IN_KEY',    '${logged_in_key}');
+define('NONCE_KEY',        '${nonce_key}');
+define('AUTH_SALT',        '${auth_salt}');
+define('SECURE_AUTH_SALT', '${secure_auth_salt}');
+define('LOGGED_IN_SALT',   '${logged_in_salt}');
+define('NONCE_SALT',       '${nonce_salt}');
 
 if (\$_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
   \$_SERVER['HTTPS'] = 'on';

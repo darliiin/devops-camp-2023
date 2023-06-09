@@ -2,7 +2,7 @@
 #   │ random pass for rds │
 #   └─────────────────────┘
 
-resource "random_password" "password_for_db" {
+resource "random_password" "db_password" {
   length           = 12
   special          = true
   override_special = "_-!%^&*()[]{}<>"
@@ -32,5 +32,5 @@ module "wordpress_rds" {
   create_db_subnet_group              = true
   subnet_ids                          = data.aws_subnets.wordpress.ids
   create_random_password              = false
-  password                            = random_password.password_for_db.result
+  password                            = random_password.db_password.result
 }

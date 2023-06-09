@@ -1,3 +1,11 @@
+variable "wordpress_vpc_tags" {
+  description = "VPC tags to place host into"
+  type        = map(string)
+  default = {
+    Name = "default"
+  }
+}
+
 /*
   ┌───────────────┐
   │ office ip     │
@@ -10,18 +18,10 @@ variable "office_ip" {
 }
 
 /*
-  ┌───────────────┐
-  │ wordpress     │
-  └───────────────┘
+  ┌───────────────────┐
+  │ instance          │
+  └───────────────────┘
 */
-
-variable "wordpress_vpc_tags" {
-  description = "VPC tags to place host into"
-  type        = map(string)
-  default = {
-    Name = "default"
-  }
-}
 
 variable "wordpress_availability_zones" {
   description = "Instance Availability Zones of host"
@@ -33,13 +33,13 @@ variable "wordpress_instances_count" {
   type        = number
 }
 
-variable "wordpress_instances_ami" {
-  description = "ami for wordpress instances"
+variable "wordpress_instances_type" {
+  description = "wordpress instances type"
   type        = string
 }
 
-variable "wordpress_instances_type" {
-  description = "wordpress instances type"
+variable "wordpress_instances_ami" {
+  description = "ami for wordpress instances"
   type        = string
 }
 

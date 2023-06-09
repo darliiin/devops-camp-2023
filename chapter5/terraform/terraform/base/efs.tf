@@ -8,7 +8,7 @@ module "efs" {
   tags   = var.tags
 
   mount_targets = {
-    for subnet in concat([data.aws_subnet.wordpress_subnet_a_zone, data.aws_subnet.wordpress_subnet_b_zone, data.aws_subnet.wordpress_subnet_c_zone]) :
+    for subnet in [data.aws_subnet.wordpress_subnet_a_zone, data.aws_subnet.wordpress_subnet_b_zone, data.aws_subnet.wordpress_subnet_c_zone] :
     subnet.availability_zone => {
       subnet_id = subnet.id
     }

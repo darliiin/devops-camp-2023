@@ -42,18 +42,18 @@ module "wordpress_ec2_instance" {
   subnet_id              = data.aws_subnet.wordpress_subnet_a_zone.id
   tags                   = var.tags
   user_data = templatefile("${path.cwd}/terraform/base/userdata.tpl", {
-    random_pwd       = random_password.password_for_db.result
+    random_pwd       = random_password.db_password.result
     endpoint_rds     = module.wordpress_rds.db_instance_endpoint
     db_name_rds      = module.wordpress_rds.db_instance_name
     efs_id           = module.efs.id
-    AUTH_KEY         = random_string.AUTH_KEY.result # Authentication Unique Keys and Salts for wordpress
-    SECURE_AUTH_KEY  = random_string.SECURE_AUTH_KEY.result
-    LOGGED_IN_KEY    = random_string.LOGGED_IN_KEY.result
-    NONCE_KEY        = random_string.NONCE_KEY.result
-    AUTH_SALT        = random_string.AUTH_SALT.result
-    SECURE_AUTH_SALT = random_string.SECURE_AUTH_SALT.result
-    LOGGED_IN_SALT   = random_string.LOGGED_IN_SALT.result
-    NONCE_SALT       = random_string.NONCE_SALT.result
+    auth_key         = random_string.auth_key.result        # authentication unique keys and salts for wordpress
+    secure_auth_key  = random_string.secure_auth_key.result
+    logged_in_key    = random_string.logged_in_key.result
+    nonce_key        = random_string.nonce_key.result
+    auth_salt        = random_string.auth_salt.result
+    secure_auth_salt = random_string.secure_auth_salt.result
+    logged_in_salt   = random_string.logged_in_salt.result
+    nonce_salt       = random_string.nonce_salt.result
   })
 }
 
@@ -61,49 +61,49 @@ module "wordpress_ec2_instance" {
 #   │ random string for wp-config.php      │
 #   └──────────────────────────────────────┘
 
-resource "random_string" "AUTH_KEY" {
+resource "random_string" "auth_key" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "SECURE_AUTH_KEY" {
+resource "random_string" "secure_auth_key" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "LOGGED_IN_KEY" {
+resource "random_string" "logged_in_key" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "NONCE_KEY" {
+resource "random_string" "nonce_key" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "AUTH_SALT" {
+resource "random_string" "auth_salt" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "SECURE_AUTH_SALT" {
+resource "random_string" "secure_auth_salt" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "LOGGED_IN_SALT" {
+resource "random_string" "logged_in_salt" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"
 }
 
-resource "random_string" "NONCE_SALT" {
+resource "random_string" "nonce_salt" {
   length           = var.wordpress_wpconfig_secrets_length
   special          = true
   override_special = "_-!%^&*()[]{}<>"

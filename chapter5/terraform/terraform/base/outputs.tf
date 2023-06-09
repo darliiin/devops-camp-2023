@@ -1,20 +1,25 @@
 output "instance_id" {
-  value = module.wordpress_ec2_instance[*].id
+  description = "Id wordpress instances"
+  value       = module.wordpress_ec2_instance[*].id
 }
 
 output "efs_id" {
-  value = module.efs.id
+  description = "Id wordpress efs"
+  value       = module.efs.id
 }
 
 output "alb_url" {
-  value = module.alb.lb_dns_name
+  description = "Alb url address"
+  value       = module.alb.lb_dns_name
 }
 
 output "record_name" {
-  value = aws_route53_record.a_type_route53.fqdn
+  description = "Fqdn of the record"
+  value       = aws_route53_record.a_type_route53.fqdn
 }
 
-output "password_for_db" {
-  sensitive = true
-  value     = random_password.password_for_db.result
+output "db_password" {
+  sensitive   = true
+  description = "Database password for admin user"
+  value       = module.wordpress_rds.db_instance_password
 }
