@@ -17,6 +17,15 @@ variable "nginx" {
   }
 }
 
+# variable "nginx_volumes_host_path" {
+#   description = "Host path for nginx"
+#   type        = string
+# }
+
+variable "nginx_volumes_container_path" {
+  description = "Container path for nginx"
+  type        = string
+}
 
 /* 
   ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐

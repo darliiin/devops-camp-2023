@@ -5,6 +5,8 @@ module "nginx" {
   container_name               = var.nginx.container_name != "" ? var.nginx.container_name : null
   container_ports              = var.nginx.container_ports != "" ? var.nginx.container_ports : null
   container_image_keep_locally = var.nginx.keep_locally
+#   nginx_volumes_host_path      = var.nginx_volumes_host_path
+  nginx_volumes_container_path = var.nginx_volumes_container_path
   client                       = var.client
   project                      = var.project
   environment                  = var.environment

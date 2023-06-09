@@ -15,16 +15,21 @@ variable "container_name" {
 }
 
 variable "container_ports" {
-  description = "Value of the name for the Docker container"
-  type        = map(any)
-  default = {
-    internal = 80
-    external = 8000
-  }
-  validation {
-    condition     = var.container_ports.internal < 1000 && var.container_ports.external >= 8000
-    error_message = "Container internal port should be less 1000 and external above or equal to 8000"
-  }
+  description = "Object of internal and external ports for the Docker container"
+  type        = object({
+    internal = number
+    external = number
+  })
+}
+
+# variable "nginx_volumes_host_path" {
+#   description = "Host path for nginx"
+#   type        = string
+# }
+
+variable "nginx_volumes_container_path" {
+  description = "Container path for nginx"
+  type        = string
 }
 
 variable "client" {

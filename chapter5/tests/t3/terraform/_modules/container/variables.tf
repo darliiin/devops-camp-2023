@@ -14,14 +14,19 @@ variable "container_name" {
   type        = string
 }
 
+
 variable "container_ports" {
-  description = "Map of internal and external ports for the Docker container"
-  type        = map(any)
-  default = {
-    internal = 6379
-    external = 6379
-  }
+  description = "Object of internal and external ports for the Docker container"
+  type        = object({
+    internal = number
+    external = number
+  })
 }
+
+# variable "ports" {
+#   description = "Map of internal and external ports for the Docker container"
+#   type        = map(any)
+# }
 
 variable "volumes_host_path" {
   description = "Path to volume on host (local machine)"

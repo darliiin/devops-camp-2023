@@ -22,6 +22,10 @@ nginx = {
   keep_locally = true
 }
 
+
+// nginx_volumes_host_path      = "${abspath(path.root)}/../../${var.environment}"
+nginx_volumes_container_path = "/usr/share/nginx/html"
+
 /* 
   ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ redis configuration variables                                                                                    │
