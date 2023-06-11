@@ -13,9 +13,9 @@ output "alb_url" {
   value       = module.alb.lb_dns_name
 }
 
-output "wordpress_fqdn" {
+output "record_name" {
   description = "Fqdn of the record"
-  value       = aws_route53_record.alb_alias_record.fqdn
+  value       = aws_route53_record.a_type_route53.fqdn
 }
 
 output "db_password" {

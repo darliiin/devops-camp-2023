@@ -3,18 +3,15 @@
 #   └─────────────────────┘
 
 module "efs" {
-  source  = "terraform-aws-modules/efs/aws"
-  version = "1.1.1"
-  name    = local.labels.wordpress_efs
-  tags    = var.tags
+  source = "terraform-aws-modules/efs/aws"
+  name   = local.labels.wordpress_efs
+  tags   = var.tags
 
   mount_targets = {
-    for subnet in [data.aws_subnet.wordpress_subnet_a_zone,
-                  data.aws_subnet.wordpress_subnet_b_zone,
-                  data.aws_subnet.wordpress_subnet_c_zone] :
-      subnet.availability_zone => {
-        subnet_id = subnet.id
-      }
+    for subnet in [data.aws_subnet.wordpress_subnet_a_zone, data.aws_subnet.wordpress_subnet_b_zone, data.aws_subnet.wordpress_subnet_c_zone] :
+    subnet.availability_zone => {
+      subnet_id = subnet.id
+    }
   }
 
   security_group_name   = local.labels.wordpress_efs_sg

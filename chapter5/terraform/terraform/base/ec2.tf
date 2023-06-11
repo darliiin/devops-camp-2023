@@ -18,7 +18,6 @@ module "wordpress_instance_labels" {
 
 module "ssh_key_pair" {
   source                = "cloudposse/key-pair/aws"
-  version               = "0.18.3"
   stage                 = var.environment
   name                  = var.client
   ssh_public_key_path   = "${path.cwd}/assets/private_keys"
@@ -32,8 +31,8 @@ module "ssh_key_pair" {
 #   └─────────────────────┘
 
 module "wordpress_ec2_instance" {
+
   source                 = "terraform-aws-modules/ec2-instance/aws"
-  version                = "5.1.0"
   count                  = var.wordpress_instances_count
   name                   = "${local.labels.wordpress_ec2}-${count.index}"
   ami                    = var.wordpress_instances_ami
