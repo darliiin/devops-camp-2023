@@ -4,6 +4,7 @@
 
 module "alb" {
   source             = "terraform-aws-modules/alb/aws"
+  version            = "8.6.1"
   name               = local.labels.wordpress_alb
   load_balancer_type = "application"
   vpc_id             = data.aws_vpc.target.id

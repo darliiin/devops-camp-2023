@@ -12,7 +12,7 @@ data "aws_route53_zone" "zone_record" {
   private_zone = false
 }
 
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "acm_validation" {
   for_each = {
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
@@ -31,10 +31,12 @@ resource "aws_route53_record" "record" {
 
 resource "aws_acm_certificate_validation" "certificate" {
   certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = values(aws_route53_record.record)[*].fqdn
+  validation_record_fqdns = values(aws_route53_record.acm_validation)[*].fqdn
+
+  depends_on = [aws_route53_record.acm_validation]
 }
 
-resource "aws_route53_record" "a_type_route53" {
+resource "aws_route53_record" "alb_alias_record" {
   zone_id = data.aws_route53_zone.zone_record.zone_id
   name    = aws_acm_certificate.cert.domain_name
   type    = "A"
