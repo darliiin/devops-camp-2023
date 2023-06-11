@@ -1,0 +1,21 @@
+➜ cat .gitignore               
+__pycache__
+.git-crypt/
+.idea/
+.ssh/
+.terraform/
+.vscode
+*.bak
+*.pyc
+*.tfstate
+*.tfstate.backup
+*.zip
+.git_rev
+*.pem
+*.pub
+*.log
+assets/ssl
+builds/
+packer_cache
+git-crypt-key
+
