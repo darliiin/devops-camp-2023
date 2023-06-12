@@ -1,15 +1,18 @@
 resource "docker_image" "image" {
-  name         = var.container_image
-  keep_locally = var.container_image_keep_locally
+  name         = "${var.image}:${var.tag}"
+  keep_locally = var.image_keep_locally
 }
 
 resource "docker_container" "container" {
   image = docker_image.image.image_id
-  name  = var.container_name
+  name  = var.name
 
-  ports {
-    internal = var.container_ports.internal
-    external = var.container_ports.external
+  dynamic "ports" {
+    for_each = var.ports
+    content {
+      internal = ports.value.internal
+      external = ports .value.external
+    }
   }
 
   volumes {
@@ -21,9 +24,4 @@ resource "docker_container" "container" {
     when    = destroy
     command = "rm -rf '${self.volumes.*.host_path[0]}'"
   }
-  #   provisioner "local-exec" {
-  #     command     = "./delete.sh"
-  #     working_dir = path.module
-  #     when        = destroy
-  #   }
 }

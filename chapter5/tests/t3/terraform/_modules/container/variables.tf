@@ -1,32 +1,32 @@
-variable "container_image" {
+variable "image" {
   description = "Docker image name"
   type        = string
 }
 
-variable "container_image_keep_locally" {
+variable "tag" {
+  description = "Docker image tag"
+  type        = string
+}
+
+variable "image_keep_locally" {
   description = "If true, then the Docker image won't be deleted on destroy operation. If this is false, it will delete the image from the docker local storage on destroy operation."
   type        = bool
   default     = false
 }
 
-variable "container_name" {
+variable "name" {
   description = "Docker container name"
   type        = string
 }
 
 
-variable "container_ports" {
+variable "ports" {
   description = "Object of internal and external ports for the Docker container"
-  type        = object({
+  type       = list(object({
     internal = number
     external = number
-  })
+  }))
 }
-
-# variable "ports" {
-#   description = "Map of internal and external ports for the Docker container"
-#   type        = map(any)
-# }
 
 variable "volumes_host_path" {
   description = "Path to volume on host (local machine)"

@@ -13,17 +13,18 @@ environment = "dev"
  */
 
 nginx = {
-  image          = "nginx:latest"
+  image          = "nginx"
+  tag            = "latest"
   container_name = "saritasa-devops-camps-2023-workspace-dev"
-  container_ports = {
-    internal = 80,
-    external = 8080
-  }
+  container_ports = [
+    {
+      internal = 80,
+      external = 8080
+    }
+  ]
   keep_locally = true
 }
 
-
-// nginx_volumes_host_path      = "${abspath(path.root)}/../../${var.environment}"
 nginx_volumes_container_path = "/usr/share/nginx/html"
 
 /* 
