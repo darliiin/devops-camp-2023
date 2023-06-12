@@ -3,6 +3,11 @@
   │ nginx configuration variables                                                                                    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  */
+variable "use_nginx" {
+  description = "Do you need to speed up the perf using nginx?"
+  type        = bool
+  default     = false
+}
 
 variable "nginx" {
   type = object({

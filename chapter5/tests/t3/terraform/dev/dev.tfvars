@@ -27,6 +27,8 @@ nginx = {
 
 nginx_volumes_container_path = "/usr/share/nginx/html"
 
+use_nginx = true
+
 /* 
   ┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ redis configuration variables                                                                                    │
