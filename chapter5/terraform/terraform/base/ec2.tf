@@ -16,7 +16,7 @@ module "wordpress_instance_labels" {
 #   │ key                 │
 #   └─────────────────────┘
 
-module "ssh_key_pair" {
+module "wordpress_ssh_keypair" {
   source                = "cloudposse/key-pair/aws"
   version               = "0.18.3"
   stage                 = var.environment
@@ -38,7 +38,7 @@ module "wordpress_ec2_instance" {
   name                   = "${local.labels.wordpress_ec2}-${count.index}"
   ami                    = var.wordpress_instances_ami
   instance_type          = var.wordpress_instances_type
-  key_name               = module.ssh_key_pair.key_name
+  key_name               = module.wordpress_ssh_keypair.key_name
   vpc_security_group_ids = [module.wordpress_sg.security_group_id]
   subnet_id              = data.aws_subnet.wordpress_subnet_a_zone.id
   tags                   = var.tags
