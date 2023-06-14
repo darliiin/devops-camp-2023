@@ -1,11 +1,12 @@
 variable "container_image" {
-  description = "Value of the name for the Docker container"
+  description = "Docker image name"
   type        = string
 }
 
 variable "container_tag" {
-  description = "Value of the tag for the Docker container"
+  description = "Docker image tag"
   type        = string
+  default     = "latest"
 }
 
 variable "container_image_keep_locally" {
@@ -21,10 +22,19 @@ variable "container_name" {
 
 variable "container_ports" {
   description = "Object of internal and external ports for the Docker container"
-  type       = list(object({
+  type = list(object({
     internal = number
     external = number
   }))
+}
+
+variable "container_volumes" {
+  description = "Volumes for the redis container"
+  type = list(object({
+    volumes_host_path      = string
+    volumes_container_path = string
+  }))
+  default = []
 }
 
 variable "client" {

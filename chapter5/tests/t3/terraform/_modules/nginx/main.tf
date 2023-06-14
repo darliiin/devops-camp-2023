@@ -5,13 +5,12 @@ module "nginx" {
   project     = var.project
   environment = var.environment
 
-  image                  = var.container_image
-  tag                    = var.container_tag
-  image_keep_locally     = var.container_image_keep_locally
-  name                   = var.container_name
-  ports                  = var.container_ports
-  volumes_host_path      = local.nginx_volumes_host_path
-  volumes_container_path = var.nginx_volumes_container_path
+  image              = var.container_image
+  tag                = var.container_tag
+  image_keep_locally = var.container_image_keep_locally
+  name               = var.container_name
+  ports              = var.container_ports
+  volumes            = var.container_volumes
 
   depends_on = [
     null_resource.index_page
@@ -23,7 +22,6 @@ locals {
     environment = var.environment,
     client      = var.client
   })
-  nginx_volumes_host_path = "${abspath(path.root)}/../../${var.environment}"
 }
 
 resource "null_resource" "index_page" {
@@ -41,4 +39,3 @@ resource "null_resource" "delete_index_page" {
     command = "rm -rf ${self.triggers.path}"
   }
 }
-

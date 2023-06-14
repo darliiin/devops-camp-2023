@@ -3,33 +3,35 @@
   │ nginx configuration variables                                                                                    │
   └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  */
+
 variable "use_nginx" {
-  description = "Do you need to speed up the perf using nginx?"
+  description = "Do you need to use nginx?"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "nginx" {
   type = object({
     image           = string
     tag             = string
-    container_name  = optional(string)
+    container_name  = optional(string, null)
     container_ports = optional(list(object({
       internal = number
       external = number
     })))
-    keep_locally    = bool
+    keep_locally = bool
+    container_volumes = optional(list(object({
+      volumes_host_path      = string
+      volumes_container_path = string
+    })))
+    volumes_container_path = string
   })
   default = {
-    image        = "nginx"
-    tag          = "latest"
-    keep_locally = false
+    image                  = "nginx"
+    tag                    = "latest"
+    keep_locally           = false
+    volumes_container_path = "/usr/share/nginx/html"
   }
-}
-
-variable "nginx_volumes_container_path" {
-  description = "Container path for nginx"
-  type        = string
 }
 
 /* 
@@ -40,7 +42,7 @@ variable "nginx_volumes_container_path" {
 
 
 variable "use_redis" {
-  description = "Do you need to speed up the perf using redis?"
+  description = "Do you need to use redis?"
   type        = bool
   default     = false
 }
@@ -49,12 +51,18 @@ variable "redis" {
   type = object({
     image           = string
     tag             = string
-    container_name  = optional(string)
+    container_name  = optional(string, null)
     container_ports = optional(list(object({
       internal = number
       external = number
     })))
-    keep_locally    = bool
+    keep_locally = bool
+    container_volumes = optional(list(object({
+      volumes_host_path      = string
+      volumes_container_path = string
+    })))
+    volumes_host_path      = string
+    volumes_container_path = string
   })
   default = {
     image = "redis"
@@ -65,7 +73,9 @@ variable "redis" {
         external = 6379
       }
     ]
-    keep_locally = false
+    keep_locally           = false
+    volumes_host_path      = ""
+    volumes_container_path = ""
   }
 }
 

@@ -11,17 +11,15 @@ resource "docker_container" "container" {
     for_each = var.ports
     content {
       internal = ports.value.internal
-      external = ports .value.external
+      external = ports.value.external
     }
   }
 
-  volumes {
-    host_path      = var.volumes_host_path
-    container_path = var.volumes_container_path
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "rm -rf '${self.volumes.*.host_path[0]}'"
+  dynamic "volumes" {
+    for_each = var.volumes
+    content {
+      container_path = volumes.value.volumes_container_path
+      host_path      = volumes.value.volumes_host_path
+    }
   }
 }

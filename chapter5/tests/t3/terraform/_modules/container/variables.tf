@@ -6,6 +6,7 @@ variable "image" {
 variable "tag" {
   description = "Docker image tag"
   type        = string
+  default     = "latest"
 }
 
 variable "image_keep_locally" {
@@ -22,24 +23,20 @@ variable "name" {
 
 variable "ports" {
   description = "Object of internal and external ports for the Docker container"
-  type       = list(object({
+  type = list(object({
     internal = number
     external = number
   }))
 }
 
-variable "volumes_host_path" {
-  description = "Path to volume on host (local machine)"
-  type        = string
-  default     = ""
+variable "volumes" {
+  description = "Volumes for the container"
+  type = list(object({
+    volumes_host_path      = string
+    volumes_container_path = string
+  }))
+  default = []
 }
-
-variable "volumes_container_path" {
-  description = "Path to volume inside container"
-  type        = string
-  default     = ""
-}
-
 
 variable "client" {
   description = "Client username"
