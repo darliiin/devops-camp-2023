@@ -29,7 +29,7 @@ variable "wordpress_availability_zones" {
 }
 
 variable "wordpress_instances_count" {
-  description = "number of available wordpress instances"
+  description = "number of desired wordpress instances"
   type        = number
 }
 
@@ -111,9 +111,21 @@ variable "db_port" {
   description = "database port"
 }
 
+/*
+  ┌───────────────────────────────────────────────┐
+  │ hosted zone name                              │
+  └───────────────────────────────────────────────┘
+*/
+
+variable "hosted_zone_name" {
+  type        = string
+  description = "hosted zone name"
+}
+
+
 /* 
   ┌───────────────────────────────────────────────┐
-  │ env=specific configuration variables          │
+  │ env-specific configuration variables          │
   └───────────────────────────────────────────────┘
  */
 

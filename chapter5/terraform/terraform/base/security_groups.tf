@@ -12,11 +12,6 @@ module "wordpress_sg" {
 
   ingress_with_source_security_group_id = [
     {
-      rule                     = "all-tcp"
-      description              = "Open connection with rds security group"
-      source_security_group_id = module.wordpress_rds_sg.security_group_id
-    },
-    {
       rule                     = "http-80-tcp"
       description              = "Open http connection"
       source_security_group_id = module.wordpress_alb_sg.security_group_id
@@ -58,22 +53,13 @@ module "wordpress_rds_sg" {
     }
   ]
 
-  ingress_with_cidr_blocks = [
-    {
-      rule        = "mysql-tcp"
-      cidr_blocks = var.office_ip
-    }
-  ]
-
   egress_with_cidr_blocks = [
     {
-      rule        = "all-all"
-      description = "Open all ipv4 connection"
-      cidr_blocks = "0.0.0.0/0"
+      rule                     = "all-all"
+      description              = "Open all ipv4 connection"
+      source_security_group_id = module.wordpress_sg.security_group_id
     }
   ]
-
-  tags = var.tags
 }
 
 #   ┌─────────────────────┐
@@ -90,16 +76,12 @@ module "wordpress_alb_sg" {
 
   ingress_with_cidr_blocks = [
     {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
+      rule        = "https-443-tcp"
       description = "Open https connection"
       cidr_blocks = "0.0.0.0/0"
     },
     {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
+      rule        = "http-80-tcp"
       description = "Open http connection"
       cidr_blocks = "0.0.0.0/0"
     }

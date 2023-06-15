@@ -18,20 +18,18 @@ module "alb" {
       target_type      = "instance"
       name             = local.labels.wordpress_alb_tg
       targets = {
-        for i in range(var.wordpress_instances_count) : "my_target_${i + 1}" => {
+        for i in range(var.wordpress_instances_count) : "wordpress_alb_target_group_${i + 1}" => {
           target_id = module.wordpress_ec2_instance[i].id
           port      = 80
         }
       }
     }
   ]
-
-  tags = var.tags
   https_listeners = [
     {
       port               = 443
       protocol           = "HTTPS"
-      certificate_arn    = aws_acm_certificate_validation.certificate.certificate_arn
+      certificate_arn    = aws_acm_certificate_validation.certificate_validation.certificate_arn
       target_group_index = 0
     }
   ]

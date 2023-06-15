@@ -14,9 +14,6 @@ terraform {
 
 provider "aws" {
   default_tags {
-    tags = {
-      Owner = "daria-nalimova-user"
-      Camp  = true
-    }
+     tags = var.tags
   }
 }

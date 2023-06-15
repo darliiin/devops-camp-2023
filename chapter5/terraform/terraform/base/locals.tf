@@ -10,5 +10,6 @@ locals {
     wordpress_alb_sg = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb-sg"])
     wordpress_alb    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp", "alb"])
     wordpress_acm    = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp.saritasa-camps.link"])
+    domain_name      = join(module.wordpress_label.delimiter, [var.environment, var.client, "wp.saritasa-camps.link"])
   }
 }
