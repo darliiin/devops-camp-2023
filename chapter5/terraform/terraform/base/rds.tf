@@ -28,7 +28,6 @@ module "wordpress_rds" {
   vpc_security_group_ids              = [module.wordpress_rds_sg.security_group_id]
   maintenance_window                  = var.db_maintenance_window
   backup_window                       = var.db_backup_window
-  tags                                = var.tags
   create_db_subnet_group              = true
   subnet_ids                          = data.aws_subnets.wordpress.ids
   create_random_password              = false

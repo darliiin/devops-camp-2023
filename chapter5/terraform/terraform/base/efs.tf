@@ -6,7 +6,6 @@ module "efs" {
   source  = "terraform-aws-modules/efs/aws"
   version = "1.1.1"
   name    = local.labels.wordpress_efs
-  tags    = var.tags
 
   mount_targets = {
     for subnet in [data.aws_subnet.wordpress_subnet_a_zone,

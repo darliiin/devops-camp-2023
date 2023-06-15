@@ -8,7 +8,6 @@ module "wordpress_sg" {
   name        = local.labels.wordpress_sg
   description = "Security group for WordPress"
   vpc_id      = data.aws_vpc.target.id
-  tags        = var.tags
 
   ingress_with_source_security_group_id = [
     {
