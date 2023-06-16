@@ -20,6 +20,17 @@ module "wordpress_ssh_keypair" {
   public_key_extension  = ".pub"
 }
 
+#   ┌──────────────────────────────────────┐
+#   │ random string for wp-config.php      │
+#   └──────────────────────────────────────┘
+
+resource "random_string" "random_secret_key_generation" {
+  for_each         = toset(var.wordpress_random_wpconfig_secrets)
+  length           = 64
+  special          = true
+  override_special = "<>{}()+*=#@;_/|"
+}
+
 #   ┌─────────────────────┐
 #   │ instances           │
 #   └─────────────────────┘
@@ -50,15 +61,4 @@ module "wordpress_ec2_instance" {
     logged_in_salt   = random_string.random_secret_key_generation["logged_in_salt"].result
     nonce_salt       = random_string.random_secret_key_generation["nonce_salt"].result
   })
-}
-
-#   ┌──────────────────────────────────────┐
-#   │ random string for wp-config.php      │
-#   └──────────────────────────────────────┘
-
-resource "random_string" "random_secret_key_generation" {
-  for_each         = toset(var.wordpress_random_wpconfig_secrets)
-  length           = 64
-  special          = true
-  override_special = "<>{}()+*=#@;_/|"
 }
