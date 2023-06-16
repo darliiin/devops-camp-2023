@@ -54,6 +54,21 @@ variable "wordpress_wpconfig_secrets_length" {
   type        = number
 }
 
+variable "wordpress_random_wpconfig_secrets" {
+  description = "Random authentication Unique Keys and Salts for wp-config.php"
+  type        = list(string)
+  default     = [
+    "auth_key",
+    "secure_auth_key",
+    "logged_in_key",
+    "nonce_key",
+    "auth_salt",
+    "secure_auth_salt",
+    "logged_in_salt",
+    "nonce_salt"
+  ]
+}
+
 /*
   ┌───────────────────┐
   │ rds               │

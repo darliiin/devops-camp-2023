@@ -40,14 +40,15 @@ module "wordpress_ec2_instance" {
     db_name_rds      = module.wordpress_rds.db_instance_name
     db_name_user     = module.wordpress_rds.db_instance_username
     efs_id           = module.efs.id
-    auth_key         = random_string.auth_key.result # authentication unique keys and salts for wordpress
-    secure_auth_key  = random_string.secure_auth_key.result
-    logged_in_key    = random_string.logged_in_key.result
-    nonce_key        = random_string.nonce_key.result
-    auth_salt        = random_string.auth_salt.result
-    secure_auth_salt = random_string.secure_auth_salt.result
-    logged_in_salt   = random_string.logged_in_salt.result
-    nonce_salt       = random_string.nonce_salt.result
+    # authentication unique keys and salts for wordpress
+    auth_key         = random_string.random_secret_key_generation["auth_key"].result
+    secure_auth_key  = random_string.random_secret_key_generation["secure_auth_key"].result
+    logged_in_key    = random_string.random_secret_key_generation["logged_in_key"].result
+    nonce_key        = random_string.random_secret_key_generation["nonce_key"].result
+    auth_salt        = random_string.random_secret_key_generation["auth_salt"].result
+    secure_auth_salt = random_string.random_secret_key_generation["secure_auth_salt"].result
+    logged_in_salt   = random_string.random_secret_key_generation["logged_in_salt"].result
+    nonce_salt       = random_string.random_secret_key_generation["nonce_salt"].result
   })
 }
 
@@ -55,50 +56,9 @@ module "wordpress_ec2_instance" {
 #   │ random string for wp-config.php      │
 #   └──────────────────────────────────────┘
 
-resource "random_string" "auth_key" {
-  length           = var.wordpress_wpconfig_secrets_length
+resource "random_string" "random_secret_key_generation" {
+  for_each         = toset(var.wordpress_random_wpconfig_secrets)
+  length           = 64
   special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "secure_auth_key" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "logged_in_key" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "nonce_key" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "auth_salt" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "secure_auth_salt" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "logged_in_salt" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
-}
-
-resource "random_string" "nonce_salt" {
-  length           = var.wordpress_wpconfig_secrets_length
-  special          = true
-  override_special = "_-!%^&*()[]{}<>"
+  override_special = "<>{}()+*=#@;_/|"
 }
