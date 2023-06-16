@@ -17,4 +17,3 @@ assets/ssl
 builds/
 packer_cache
 git-crypt-key
-.terraform

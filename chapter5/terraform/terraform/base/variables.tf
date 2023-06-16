@@ -147,8 +147,3 @@ variable "environment" {
     error_message = "Environment could be one of dev | staging | prod"
   }
 }
-
-variable "tags" {
-  description = "tags for the resource"
-  type        = map(any)
-}

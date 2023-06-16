@@ -71,8 +71,6 @@ module "wordpress_alb_sg" {
   name        = local.labels.wordpress_alb_sg
   description = "Security group for ALB"
   vpc_id      = data.aws_vpc.target.id
-  tags        = var.tags
-
   ingress_with_cidr_blocks = [
     {
       rule        = "https-443-tcp"
