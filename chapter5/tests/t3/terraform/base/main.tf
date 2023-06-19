@@ -27,15 +27,10 @@ module "redis" {
   container_tag                = var.redis.tag
   container_ports              = var.redis.container_ports
   container_image_keep_locally = var.redis.keep_locally
-  container_volumes = [
-    {
-      volumes_host_path      = "${abspath(path.root)}/../../${var.environment}"
-      volumes_container_path = var.redis.volumes_container_path
-    }
-  ]
-  client                       = var.client
-  project                      = var.project
-  environment                  = var.environment
+  container_volumes = []
+  client      = var.client
+  project     = var.project
+  environment = var.environment
 
   depends_on = [module.nginx]
 }

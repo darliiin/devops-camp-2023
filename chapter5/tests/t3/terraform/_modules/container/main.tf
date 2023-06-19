@@ -18,8 +18,8 @@ resource "docker_container" "container" {
   dynamic "volumes" {
     for_each = var.volumes
     content {
-      container_path = volumes.value.volumes_container_path
       host_path      = volumes.value.volumes_host_path
+      container_path = volumes.value.volumes_container_path
     }
   }
 }
