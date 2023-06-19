@@ -8,9 +8,7 @@ module "efs" {
   name    = local.labels.wordpress_efs
 
   mount_targets = {
-    for subnet in [data.aws_subnet.wordpress_subnet_a_zone,
-      data.aws_subnet.wordpress_subnet_b_zone,
-    data.aws_subnet.wordpress_subnet_c_zone] :
+    for subnet in values(data.aws_subnet.wordpress_subnets) :
     subnet.availability_zone => {
       subnet_id = subnet.id
     }

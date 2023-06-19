@@ -22,7 +22,7 @@ wordpress_vpc_tags = {
   └────────────┘
 */
 
-office_ip = "54.148.180.72/32"
+ip_list = ["54.148.180.72/32"]
 
 /*
   ┌──────────────┐
@@ -67,3 +67,11 @@ db_port                 = "3306"
 */
 
 hosted_zone_name = "saritasa-camps.link"
+
+/*
+  ┌────────────────────────────────┐
+  │ domain name                    │
+  └────────────────────────────────┘
+*/
+
+domain_name = "wp.saritasa-camps.link"

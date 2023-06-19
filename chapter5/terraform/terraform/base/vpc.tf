@@ -9,17 +9,9 @@ data "aws_subnets" "wordpress" {
   }
 }
 
-data "aws_subnet" "wordpress_subnet_a_zone" {
-  vpc_id            = data.aws_vpc.target.id
-  availability_zone = "us-east-2a"
-}
+data "aws_subnet" "wordpress_subnets" {
+  for_each = toset(var.subnet_availability_zones)
 
-data "aws_subnet" "wordpress_subnet_b_zone" {
   vpc_id            = data.aws_vpc.target.id
-  availability_zone = "us-east-2b"
-}
-
-data "aws_subnet" "wordpress_subnet_c_zone" {
-  vpc_id            = data.aws_vpc.target.id
-  availability_zone = "us-east-2c"
+  availability_zone = each.value
 }

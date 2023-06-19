@@ -21,7 +21,7 @@ module "wordpress_sg" {
     {
       rule        = "ssh-tcp"
       description = "Open ssh connection"
-      cidr_blocks = var.office_ip
+      cidr_blocks = var.ip_list[0]
     }
   ]
 

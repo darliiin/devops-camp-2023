@@ -12,9 +12,8 @@ variable "wordpress_vpc_tags" {
   └───────────────┘
 */
 
-variable "office_ip" {
-  description = "Office ip"
-  type        = string
+variable "ip_list" {
+  type    = list(string)
 }
 
 /*
@@ -128,6 +127,17 @@ variable "db_port" {
 
 /*
   ┌───────────────────────────────────────────────┐
+  │ subnet availability zones                     │
+  └───────────────────────────────────────────────┘
+*/
+
+variable "subnet_availability_zones" {
+  type    = list(string)
+  default = ["us-east-2a", "us-east-2b", "us-east-2c"]
+}
+
+/*
+  ┌───────────────────────────────────────────────┐
   │ hosted zone name                              │
   └───────────────────────────────────────────────┘
 */
@@ -135,6 +145,17 @@ variable "db_port" {
 variable "hosted_zone_name" {
   type        = string
   description = "hosted zone name"
+}
+
+/*
+  ┌───────────────────────────────────────────────┐
+  │ domain name                                   │
+  └───────────────────────────────────────────────┘
+*/
+
+variable "domain_name" {
+  type        = string
+  description = "tail domain name"
 }
 
 
