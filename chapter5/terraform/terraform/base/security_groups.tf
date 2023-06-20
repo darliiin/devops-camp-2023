@@ -18,10 +18,10 @@ module "wordpress_sg" {
   ]
 
   ingress_with_cidr_blocks = [
-    {
+    for ip in var.allowed_ssh_ips : {
       rule        = "ssh-tcp"
       description = "Open ssh connection"
-      cidr_blocks = var.ip_list[0]
+      cidr_blocks = ip
     }
   ]
 

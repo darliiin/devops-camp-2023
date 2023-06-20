@@ -10,7 +10,7 @@ data "aws_subnets" "wordpress" {
 }
 
 data "aws_subnet" "wordpress_subnets" {
-  for_each = toset(var.subnet_availability_zones)
+  for_each = toset(var.wordpress_availability_zones)
 
   vpc_id            = data.aws_vpc.target.id
   availability_zone = each.value
