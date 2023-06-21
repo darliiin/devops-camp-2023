@@ -6,7 +6,6 @@ variable "container_image" {
 variable "container_image_keep_locally" {
   description = "If true, then the Docker image won't be deleted on destroy operation. If this is false, it will delete the image from the docker local storage on destroy operation."
   type        = bool
-  default     = false
 }
 
 variable "container_name" {
@@ -28,7 +27,6 @@ variable "container_volumes" {
     volumes_host_path      = string
     volumes_container_path = string
   }))
-  default = []
 }
 
 variable "client" {
