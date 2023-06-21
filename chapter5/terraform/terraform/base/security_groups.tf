@@ -18,10 +18,10 @@ module "wordpress_sg" {
   ]
 
   ingress_with_cidr_blocks = [
-    for ip in var.allowed_ssh_ips : {
+    {
       rule        = "ssh-tcp"
       description = "Open ssh connection"
-      cidr_blocks = ip
+      cidr_blocks = join(",", var.allowed_ssh_ips)
     }
   ]
 
@@ -48,6 +48,7 @@ module "wordpress_rds_sg" {
   ingress_with_source_security_group_id = [
     {
       rule                     = "mysql-tcp"
+      description              = "Allow inbound traffic from ec2 security group"
       source_security_group_id = module.wordpress_sg.security_group_id
     }
   ]
@@ -75,11 +76,6 @@ module "wordpress_alb_sg" {
     {
       rule        = "https-443-tcp"
       description = "Open https connection"
-      cidr_blocks = "0.0.0.0/0"
-    },
-    {
-      rule        = "http-80-tcp"
-      description = "Open http connection"
       cidr_blocks = "0.0.0.0/0"
     }
   ]
