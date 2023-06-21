@@ -13,7 +13,6 @@ variable "use_nginx" {
 variable "nginx" {
   type = object({
     image          = string
-    tag            = string
     container_name = string
     container_ports = optional(list(object({
       internal = number
@@ -27,8 +26,7 @@ variable "nginx" {
     volumes_container_path = string
   })
   default = {
-    image                  = "nginx"
-    tag                    = "latest"
+    image                  = "nginx:latest"
     container_name         = "nginx"
     keep_locally           = false
     volumes_container_path = "/usr/share/nginx/html"
@@ -51,7 +49,6 @@ variable "use_redis" {
 variable "redis" {
   type = object({
     image          = string
-    tag            = string
     container_name = string
     container_ports = optional(list(object({
       internal = number
@@ -64,8 +61,7 @@ variable "redis" {
     })))
   })
   default = {
-    image          = "redis"
-    tag            = "latest"
+image              = "redis:latest"
     container_name = "redis"
     container_ports = [
       {

@@ -3,12 +3,6 @@ variable "container_image" {
   type        = string
 }
 
-variable "container_tag" {
-  description = "Docker image tag"
-  type        = string
-  default     = "latest"
-}
-
 variable "container_image_keep_locally" {
   description = "If true, then the Docker image won't be deleted on destroy operation. If this is false, it will delete the image from the docker local storage on destroy operation."
   type        = bool

@@ -1,5 +1,5 @@
 resource "docker_image" "image" {
-  name         = "${var.image}:${var.tag}"
+  name         = var.image
   keep_locally = var.image_keep_locally
 }
 

@@ -13,8 +13,7 @@ environment = "dev"
  */
 
 nginx = {
-  image          = "nginx"
-  tag            = "latest"
+  image          = "nginx:latest"
   container_name = "saritasa-devops-camps-2023-workspace-dev"
   container_ports = [
     {
@@ -32,4 +31,4 @@ nginx = {
   └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
  */
 
-use_redis = true
+use_redis = false
