@@ -32,4 +32,5 @@ module "wordpress_rds" {
   subnet_ids                          = data.aws_subnets.wordpress.ids
   create_random_password              = false
   password                            = random_password.db_password.result
+  skip_final_snapshot                 = true
 }
